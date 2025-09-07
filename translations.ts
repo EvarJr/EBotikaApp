@@ -226,7 +226,8 @@ export const translations: Translations = {
     bhw_modal_add_title: 'Add New Resident Record',
     bhw_modal_add_button: 'Add Record',
     bhw_record_created_alert: 'Resident record for {name} has been created successfully.',
-    bhw_delete_confirm_text: "Are you sure you want to delete this resident record? This action cannot be undone.",
+    bhw_delete_confirm_title: 'Confirm Deletion',
+    bhw_delete_confirm_text: "Are you sure you want to delete the record for {name}? This action cannot be undone.",
 
     // RHU Patient Detail Management
     patient_detail_title: "Patient Account Details",
@@ -488,7 +489,8 @@ export const translations: Translations = {
     bhw_modal_add_title: 'Magdugang it Bag-ong Rekord it Residente',
     bhw_modal_add_button: 'Idugang ro Rekord',
     bhw_record_created_alert: 'Ro rekord para kay {name} hay madinaeag-on nga nahimo.',
-    bhw_delete_confirm_text: "Sigurado ka gid bala nga gusto mong panason ro rekord it residente nga raya? Indi eon raya mabawi.",
+    bhw_delete_confirm_title: 'Kumpirmahon ro Pagpanas',
+    bhw_delete_confirm_text: "Sigurado ka gid bala nga gusto mong panason ro rekord para kay {name}? Indi eon raya mabawi.",
 
     // RHU Patient Detail Management
     patient_detail_title: "Mga Detalye it Account it Pasyente",

@@ -70,16 +70,32 @@ const AddResidentRecordModal: React.FC<{ onClose: () => void }> = ({ onClose }) 
     );
 };
 
-const ResidentRecordCard: React.FC<{ record: ResidentRecord }> = ({ record }) => {
-    const { deleteResidentRecord, t } = useAppContext();
+const ConfirmationModal: React.FC<{
+    title: string;
+    text: string;
+    onConfirm: () => void;
+    onClose: () => void;
+}> = ({ title, text, onConfirm, onClose }) => {
+    const { t } = useTranslation();
+    return (
+        <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+                <h2 className="text-xl font-bold mb-2 text-gray-800">{title}</h2>
+                <p className="text-sm text-gray-600 mb-6">{text}</p>
+                <div className="flex justify-end space-x-2">
+                    <button onClick={onClose} className="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300">
+                        {t('cancel')}
+                    </button>
+                    <button onClick={onConfirm} className="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700">
+                        {t('confirm')}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
 
-    const handleDelete = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (window.confirm(t('bhw_delete_confirm_text'))) {
-            deleteResidentRecord(record.id);
-        }
-    };
-
+const ResidentRecordCard: React.FC<{ record: ResidentRecord; onDelete: () => void; }> = ({ record, onDelete }) => {
     return (
         <div className="w-full text-left bg-gray-50 p-2 rounded-md flex justify-between items-center text-sm">
             <div>
@@ -87,7 +103,10 @@ const ResidentRecordCard: React.FC<{ record: ResidentRecord }> = ({ record }) =>
                 <p className="text-gray-500">{record.address}</p>
             </div>
             <button
-                onClick={handleDelete}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete();
+                }}
                 className="p-2 text-red-500 hover:bg-red-100 rounded-full transition-colors"
                 aria-label={`Delete record for ${record.name}`}
             >
@@ -99,9 +118,10 @@ const ResidentRecordCard: React.FC<{ record: ResidentRecord }> = ({ record }) =>
 
 
 const BHWDashboard: React.FC = () => {
-    const { user, logout, navigateTo, t, residentRecords } = useAppContext();
+    const { user, logout, navigateTo, t, residentRecords, deleteResidentRecord } = useAppContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [recordToDelete, setRecordToDelete] = useState<ResidentRecord | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -116,9 +136,24 @@ const BHWDashboard: React.FC = () => {
         };
     }, []);
 
+    const handleConfirmDelete = () => {
+        if (recordToDelete) {
+            deleteResidentRecord(recordToDelete.id);
+            setRecordToDelete(null);
+        }
+    };
+
     return (
         <div className="relative flex flex-col h-full">
             {isModalOpen && <AddResidentRecordModal onClose={() => setIsModalOpen(false)} />}
+            {recordToDelete && (
+                <ConfirmationModal 
+                    title={t('bhw_delete_confirm_title')}
+                    text={t('bhw_delete_confirm_text', { name: recordToDelete.name })}
+                    onConfirm={handleConfirmDelete}
+                    onClose={() => setRecordToDelete(null)}
+                />
+            )}
             <header className="bg-white p-4 shadow-md z-10">
                  <div className="flex justify-between items-center">
                     <div className="relative" ref={dropdownRef}>
@@ -186,7 +221,11 @@ const BHWDashboard: React.FC = () => {
                     <div className="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
                         {residentRecords.length > 0 ? (
                             residentRecords.map(record => (
-                                <ResidentRecordCard key={record.id} record={record} />
+                                <ResidentRecordCard 
+                                    key={record.id} 
+                                    record={record} 
+                                    onDelete={() => setRecordToDelete(record)} 
+                                />
                             ))
                         ) : (
                             <p className="text-center text-sm text-gray-500 py-4">No resident records added yet.</p>
