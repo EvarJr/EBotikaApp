@@ -21,8 +21,16 @@ const ScanResultModal: React.FC<{ result: 'valid' | 'invalid'; onClose: () => vo
 );
 
 const PharmacyScanScreen: React.FC = () => {
-    const { navigateTo } = useAppContext();
+    const { navigateTo, user } = useAppContext();
     const [scanResult, setScanResult] = useState<'valid' | 'invalid' | null>(null);
+
+    const handleBack = () => {
+        if (user?.role === 'bhw') {
+            navigateTo(Screens.BHW_DASHBOARD);
+        } else {
+            navigateTo(Screens.PHARMACY_DASHBOARD);
+        }
+    };
 
     const handleScan = (result: 'valid' | 'invalid') => {
         setScanResult(result);
@@ -32,7 +40,7 @@ const PharmacyScanScreen: React.FC = () => {
         <div className="relative flex flex-col h-full bg-gray-900 text-white">
             {scanResult && <ScanResultModal result={scanResult} onClose={() => setScanResult(null)} />}
             <header className="bg-black bg-opacity-30 p-4 z-10 flex items-center">
-                <button onClick={() => navigateTo(Screens.PHARMACY_DASHBOARD)} className="text-white hover:text-gray-300 mr-4">
+                <button onClick={handleBack} className="text-white hover:text-gray-300 mr-4">
                     <ArrowLeftIcon />
                 </button>
                 <h1 className="text-xl font-bold">Scan QR Code</h1>

@@ -59,6 +59,7 @@ export const initialAppContext: IAppContext = {
   doctorProfiles: [],
   updateDoctorAvailability: () => console.warn('updateDoctorAvailability function not yet initialized'),
   chatAccess: {},
+  upgradeUserToPremium: () => console.warn('upgradeUserToPremium function not yet initialized'),
 };
 
 export const AppContext = createContext<IAppContext>(initialAppContext);

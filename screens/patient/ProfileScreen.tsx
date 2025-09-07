@@ -25,7 +25,6 @@ const GuestProfileForm: React.FC = () => {
             alert("Please fill in all details.");
             return;
         }
-        // FIX: Check for validIdFile and include it in the updateGuestDetails call.
         if (!validIdFile) {
             alert(t('register_id_required_alert'));
             return;
@@ -52,7 +51,6 @@ const GuestProfileForm: React.FC = () => {
                     <label htmlFor="address" className="block text-sm font-medium text-gray-700">{t('guest_modal_address_label')}</label>
                     <textarea id="address" rows={3} value={address} onChange={e => setAddress(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" required />
                 </div>
-                {/* FIX: Add file input for the valid ID. */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">{t('register_valid_id_label')}</label>
                     <p className="text-xs text-gray-500 mb-2">{t('register_valid_id_prompt')}</p>
@@ -124,12 +122,68 @@ const AvatarSelectionModal: React.FC<{ onSelect: (url: string) => void; onClose:
     </div>
 );
 
+const PaymentModal: React.FC<{ onClose: () => void; onPaymentSuccess: () => void; }> = ({ onClose, onPaymentSuccess }) => {
+    const { t } = useTranslation();
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    const handlePayment = (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsProcessing(true);
+        // Simulate API call
+        setTimeout(() => {
+            setIsProcessing(false);
+            alert(t('payment_success_alert'));
+            onPaymentSuccess();
+            onClose();
+        }, 2000);
+    };
+
+    return (
+        <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4" onClick={onClose}>
+            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+                <h2 className="text-xl font-bold text-gray-800">{t('payment_modal_title')}</h2>
+                <p className="text-sm text-gray-600 mt-1">{t('payment_modal_description')}</p>
+                <div className="my-4 p-3 bg-teal-50 rounded-lg text-center">
+                    <p className="font-semibold text-teal-700">{t('payment_modal_price')}</p>
+                </div>
+                <form onSubmit={handlePayment} className="space-y-3">
+                    <div>
+                        <label htmlFor="cardName" className="block text-xs font-medium text-gray-700">{t('payment_modal_cardholder_label')}</label>
+                        <input type="text" id="cardName" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required />
+                    </div>
+                    <div>
+                        <label htmlFor="cardNumber" className="block text-xs font-medium text-gray-700">{t('payment_modal_card_number_label')}</label>
+                        <input type="text" id="cardNumber" placeholder="•••• •••• •••• ••••" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label htmlFor="expiry" className="block text-xs font-medium text-gray-700">{t('payment_modal_expiry_label')}</label>
+                            <input type="text" id="expiry" placeholder="MM/YY" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required />
+                        </div>
+                        <div>
+                            <label htmlFor="cvc" className="block text-xs font-medium text-gray-700">{t('payment_modal_cvc_label')}</label>
+                            <input type="text" id="cvc" placeholder="•••" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required />
+                        </div>
+                    </div>
+                    <div className="pt-2">
+                        <button type="submit" disabled={isProcessing} className="w-full bg-teal-500 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-teal-600 disabled:bg-teal-300">
+                            {isProcessing ? t('payment_modal_processing_button') : t('payment_modal_pay_button')}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+
 const UserProfileView: React.FC = () => {
-    const { logout, user, language, setLanguage, updateUserProfile } = useAppContext();
+    const { logout, user, language, setLanguage, updateUserProfile, upgradeUserToPremium } = useAppContext();
     const { t } = useTranslation();
     
     const [isEditing, setIsEditing] = useState(false);
     const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [editableUser, setEditableUser] = useState(user!);
 
     if (!user) return null;
@@ -157,6 +211,10 @@ const UserProfileView: React.FC = () => {
         setEditableUser(prev => ({ ...prev, avatarUrl: url }));
         setIsAvatarModalOpen(false);
     };
+    
+    const handleUpgradeSuccess = () => {
+        upgradeUserToPremium(user.id);
+    };
 
     const ToggleSwitch = () => (
         <label htmlFor="toggle" className="flex items-center cursor-pointer">
@@ -173,6 +231,7 @@ const UserProfileView: React.FC = () => {
     return (
         <div className="space-y-6">
             {isAvatarModalOpen && <AvatarSelectionModal onSelect={handleAvatarSelect} onClose={() => setIsAvatarModalOpen(false)} />}
+            {isPaymentModalOpen && <PaymentModal onClose={() => setIsPaymentModalOpen(false)} onPaymentSuccess={handleUpgradeSuccess} />}
             <div className="bg-white p-6 rounded-lg shadow text-center">
                 <div className="relative w-24 h-24 mx-auto">
                     {currentUserForDisplay.avatarUrl ? (
@@ -229,7 +288,7 @@ const UserProfileView: React.FC = () => {
                  <div className="bg-white p-4 rounded-lg shadow text-center">
                     <h3 className="font-bold text-lg text-gray-800">{t('profile_upgrade_prompt_title')}</h3>
                     <p className="text-sm text-gray-600 mt-1">{t('profile_upgrade_prompt_text')}</p>
-                    <button className="mt-3 bg-yellow-400 text-yellow-900 font-bold py-2 px-4 rounded-lg hover:bg-yellow-500 transition">
+                    <button onClick={() => setIsPaymentModalOpen(true)} className="mt-3 bg-yellow-400 text-yellow-900 font-bold py-2 px-4 rounded-lg hover:bg-yellow-500 transition">
                         {t('profile_upgrade_button')}
                     </button>
                 </div>

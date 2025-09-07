@@ -101,6 +101,7 @@ export interface IAppContext {
   doctorProfiles: DoctorProfile[];
   updateDoctorAvailability: (doctorId: string, availability: 'Available' | 'On Leave') => void;
   chatAccess: { [conversationId: string]: number };
+  upgradeUserToPremium: (userId: string) => void;
 }
 
 export interface ChatMessage {

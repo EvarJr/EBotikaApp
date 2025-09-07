@@ -455,6 +455,26 @@ export default function App() {
     ));
   }, []);
 
+  const upgradeUserToPremium = useCallback((userId: string) => {
+    setUsers(prevUsers => prevUsers.map(u => 
+        u.id === userId ? { ...u, isPremium: true } : u
+    ));
+    setUser(prevUser => {
+        if (prevUser && prevUser.id === userId) {
+            const upgradedUser = { ...prevUser, isPremium: true };
+            try {
+                const currentSession = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+                const newSession = { ...currentSession, user: upgradedUser };
+                localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
+            } catch (e) {
+                console.error("Could not save upgraded session to localStorage", e);
+            }
+            return upgradedUser;
+        }
+        return prevUser;
+    });
+  }, []);
+
   const value = useMemo(() => ({
     role,
     user,
@@ -509,7 +529,8 @@ export default function App() {
     doctorProfiles,
     updateDoctorAvailability,
     chatAccess,
-  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, residentRecords, addResidentRecord, deleteResidentRecord, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, sendDoctorPatientMessage, markDoctorChatAsRead, doctorProfiles, updateDoctorAvailability, chatAccess]);
+    upgradeUserToPremium,
+  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, residentRecords, addResidentRecord, deleteResidentRecord, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, sendDoctorPatientMessage, markDoctorChatAsRead, doctorProfiles, updateDoctorAvailability, chatAccess, upgradeUserToPremium]);
 
   const renderScreen = () => {
     switch (screen) {

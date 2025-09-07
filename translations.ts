@@ -124,6 +124,18 @@ export const translations: Translations = {
     profile_upgrade_prompt_text: 'Get unlimited, anytime chat access with all doctors.',
     profile_upgrade_button: 'Upgrade Now',
     
+    // Payment Modal
+    payment_modal_title: 'Upgrade to Premium',
+    payment_modal_description: 'Unlock unlimited chat access with all doctors.',
+    payment_modal_price: 'One-time payment of ₱299.00',
+    payment_modal_cardholder_label: 'Cardholder Name',
+    payment_modal_card_number_label: 'Card Number',
+    payment_modal_expiry_label: 'Expiry Date (MM/YY)',
+    payment_modal_cvc_label: 'CVC',
+    payment_modal_pay_button: 'Pay Now',
+    payment_modal_processing_button: 'Processing...',
+    payment_success_alert: 'Payment successful! You are now a Premium Member.',
+    
     // AI Summary Card
     ai_summary_title: 'AI Triage Summary',
     ai_summary_suggestion: 'Suggestion',
@@ -248,6 +260,7 @@ export const translations: Translations = {
     bhw_activity_title: "Recent Activity",
     bhw_export_button: "Export as CSV",
     bhw_exporting_button: "Exporting...",
+    bhw_scan_qr_button: 'Scan Prescription QR',
 
     // RHU Patient Detail Management
     patient_detail_title: "Patient Account Details",
@@ -407,6 +420,18 @@ export const translations: Translations = {
     profile_upgrade_prompt_text: 'Maka-access sa owa’t-limite nga chat sa tanan nga mga doktor.',
     profile_upgrade_button: 'Mag-upgrade',
     
+    // Payment Modal
+    payment_modal_title: 'Mag-upgrade sa Premium',
+    payment_modal_description: 'Maka-access sa owa’t-limite nga chat sa tanan nga mga doktor.',
+    payment_modal_price: 'Isaeang beses nga pagbayad it ₱299.00',
+    payment_modal_cardholder_label: 'Pangaean sa Kard',
+    payment_modal_card_number_label: 'Numero it Kard',
+    payment_modal_expiry_label: 'Petsa it Pag-expire (MM/YY)',
+    payment_modal_cvc_label: 'CVC',
+    payment_modal_pay_button: 'Magbayad',
+    payment_modal_processing_button: 'Ginaproseso...',
+    payment_success_alert: 'Madinaeag-on ro pagbayad! Ikaw hay sangka Premium Member eon.',
+    
     // AI Summary Card
     ai_summary_title: 'AI Triage Summary',
     ai_summary_suggestion: 'Suhestiyon',
@@ -530,6 +555,7 @@ export const translations: Translations = {
     bhw_activity_title: "Mga Ulihing Aktibidad",
     bhw_export_button: "I-export bilang CSV",
     bhw_exporting_button: "Gina-export...",
+    bhw_scan_qr_button: 'I-scan ro Reseta nga QR',
 
     // RHU Patient Detail Management
     patient_detail_title: "Mga Detalye it Account it Pasyente",

@@ -3,7 +3,7 @@ import { useAppContext } from '../../hooks/useAppContext';
 import { Screens, MOCK_BHW_WEEKLY_RECORDS_ADDED } from '../../constants';
 import { useTranslation } from '../../hooks/useTranslation';
 import type { ResidentRecord } from '../../types';
-import { TrashIcon } from '../../components/Icons';
+import { TrashIcon, QRIcon } from '../../components/Icons';
 import { MockChart } from '../../components/Dashboard';
 
 const AddResidentRecordModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
@@ -256,9 +256,17 @@ const BHWDashboard: React.FC = () => {
                  </div>
             </header>
             <main className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-6 custom-scrollbar">
+                <button
+                    onClick={() => navigateTo(Screens.PHARMACY_SCAN)}
+                    className="w-full flex items-center justify-center bg-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-blue-600 transition"
+                >
+                    <QRIcon />
+                    <span className="ml-3">{t('bhw_scan_qr_button')}</span>
+                </button>
+
                 <button 
                     onClick={() => setIsModalOpen(true)}
-                    className="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow hover:bg-blue-600 transition"
+                    className="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg shadow hover:bg-green-600 transition"
                 >
                     {t('bhw_add_resident_record_button')}
                 </button>
