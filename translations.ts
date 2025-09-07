@@ -21,7 +21,7 @@ export const translations: Translations = {
     login_error: 'Invalid email or password. Please try again.',
     login_banned_error: 'This account has been banned.',
     login_hint: "Hint: Use 'password' for all mock user passwords.",
-    login_hint_example: "E.g., doctor@ebotika.ph, pharmacy@ebotika.ph",
+    login_hint_example: "E.g., patient@, doctor@, pharmacy@, admin@, bhw@",
 
     // Register Screen
     register_title: 'Register New Account',
@@ -36,6 +36,7 @@ export const translations: Translations = {
     register_file_chosen: "File: {fileName}",
     register_no_file_chosen: "No file chosen",
     register_id_required_alert: "Please upload a valid ID to complete registration.",
+    register_not_verified_error: "Registration failed. Your name is not on the list of verified residents. Please contact your Barangay Health Worker.",
 
     // Layout & Navigation
     nav_home: 'Home',
@@ -77,6 +78,7 @@ export const translations: Translations = {
     guest_modal_save: 'Save & Continue',
     consultation_sent_alert: 'Your AI summary has been sent to a doctor for review. You can track the status in your Consultations and Prescriptions lists.',
     guest_modal_id_required_alert: "Please upload a valid ID to proceed.",
+    guest_not_verified_error: "Verification failed. Your name is not on the list of verified residents. Only verified residents can send consultations to a doctor.",
 
     // Consultations Screen
     consultations_title: 'My Consultations',
@@ -198,6 +200,14 @@ export const translations: Translations = {
     rhu_show_management_button: 'Show User Management',
     rhu_hide_management_button: 'Hide User Management',
 
+    // BHW Dashboard
+    bhw_dashboard_title: 'BHW Dashboard',
+    bhw_add_resident_record_button: 'Add Resident Record',
+    bhw_resident_record_list_title: 'Resident Master List',
+    bhw_modal_add_title: 'Add New Resident Record',
+    bhw_modal_add_button: 'Add Record',
+    bhw_record_created_alert: 'Resident record for {name} has been created successfully.',
+
     // RHU Patient Detail Management
     patient_detail_title: "Patient Account Details",
     patient_detail_info: "Account Information",
@@ -253,7 +263,7 @@ export const translations: Translations = {
     login_error: 'Sala nga email o password. Palihog, testingan uman.',
     login_banned_error: 'Raya nga account hay na-ban.',
     login_hint: "Pahiwatig: Gamiton ro 'password' sa tanan nga mock user.",
-    login_hint_example: "Hal., doctor@ebotika.ph, pharmacy@ebotika.ph",
+    login_hint_example: "Hal., patient@, doctor@, pharmacy@, admin@, bhw@",
 
     // Register Screen
     register_title: 'Magrehistro it Bag-ong Account',
@@ -268,6 +278,7 @@ export const translations: Translations = {
     register_file_chosen: "File: {fileName}",
     register_no_file_chosen: "Owa't napili nga file",
     register_id_required_alert: "Palihog, mag-upload it balido nga ID para makumpleto ro pagrehistro.",
+    register_not_verified_error: "Nagpalya ro pagrehistro. Ro imong pangaean hay owa sa listahan it mga beripikadong residente. Palihog kontaka ro inyong Barangay Health Worker.",
 
     // Layout & Navigation
     nav_home: 'Balay',
@@ -309,6 +320,7 @@ export const translations: Translations = {
     guest_modal_save: 'I-save ag Magpadayon',
     consultation_sent_alert: 'Ro imong AI summary hay naipadara eon sa doktor para sa review. Pwede mong masubaybayan ro status sa imong listahan it Konsultasyon ag Reseta.',
     guest_modal_id_required_alert: "Palihog, mag-upload it balido nga ID para makapadayon.",
+    guest_not_verified_error: "Nagpalya ro beripikasyon. Ro imong pangaean hay owa sa listahan it mga beripikadong residente. Ro mga beripikadong residente eamang ro pwedeng magpadara it konsultasyon sa doktor.",
     
     // Consultations Screen
     consultations_title: 'Akong mga Konsulta',
@@ -429,6 +441,14 @@ export const translations: Translations = {
     rhu_exporting_button: 'Gina-export...',
     rhu_show_management_button: 'Ipakita ro Pagdumaea',
     rhu_hide_management_button: 'Taguon ro Pagdumaea',
+
+    // BHW Dashboard
+    bhw_dashboard_title: 'BHW Dashboard',
+    bhw_add_resident_record_button: 'Magdugang it Rekord it Residente',
+    bhw_resident_record_list_title: 'Master List it mga Residente',
+    bhw_modal_add_title: 'Magdugang it Bag-ong Rekord it Residente',
+    bhw_modal_add_button: 'Idugang ro Rekord',
+    bhw_record_created_alert: 'Ro rekord para kay {name} hay madinaeag-on nga nahimo.',
 
     // RHU Patient Detail Management
     patient_detail_title: "Mga Detalye it Account it Pasyente",

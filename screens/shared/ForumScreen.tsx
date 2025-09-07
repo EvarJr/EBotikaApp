@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../hooks/useAppContext';
 import { Screens } from '../../constants';
-import type { ForumPost } from '../../types';
+import type { ForumPost, Role } from '../../types';
 import { ArrowLeftIcon, SendIcon } from '../../components/Icons';
 
 const PostCard: React.FC<{ post: ForumPost }> = ({ post }) => {
@@ -9,10 +9,11 @@ const PostCard: React.FC<{ post: ForumPost }> = ({ post }) => {
     const isCurrentUser = user?.id === post.author.id;
     const isOnline = post.author.isOnline;
     
-    const roleColors = {
+    const roleColors: { [key in Role]: string } = {
         doctor: 'bg-blue-100 text-blue-800',
         pharmacy: 'bg-green-100 text-green-800',
         admin: 'bg-purple-100 text-purple-800',
+        bhw: 'bg-orange-100 text-orange-800',
         patient: 'bg-gray-100 text-gray-800',
         guest: 'bg-gray-100 text-gray-800',
         unauthenticated: 'bg-gray-100 text-gray-800',
@@ -50,6 +51,9 @@ const ForumScreen: React.FC = () => {
                 break;
             case 'admin':
                 navigateTo(Screens.RHU_DASHBOARD);
+                break;
+            case 'bhw':
+                navigateTo(Screens.BHW_DASHBOARD);
                 break;
             default:
                 navigateTo(Screens.WELCOME); // Fallback

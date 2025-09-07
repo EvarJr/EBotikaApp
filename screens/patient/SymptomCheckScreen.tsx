@@ -90,7 +90,7 @@ const GuestDetailsModal: React.FC<{ onClose: () => void; onSubmit: (details: { n
 };
 
 const SymptomCheckScreen: React.FC = () => {
-    const { navigateTo, symptom, user, role, updateGuestDetails, addConsultation, addPrescription, language } = useAppContext();
+    const { navigateTo, symptom, user, role, updateGuestDetails, addConsultation, addPrescription, language, residentRecords } = useAppContext();
     const { t } = useTranslation();
     const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
     
@@ -164,6 +164,15 @@ const SymptomCheckScreen: React.FC = () => {
     };
 
     const handleGuestSubmit = (details: { name: string; contactNumber: string; address: string; validIdFile: File }) => {
+        const isVerified = residentRecords.some(record =>
+            record.name.trim().toLowerCase() === details.name.trim().toLowerCase()
+        );
+
+        if (!isVerified) {
+            alert(t('guest_not_verified_error'));
+            return;
+        }
+
         const newPatientUser = updateGuestDetails(details);
         setIsGuestModalOpen(false);
         createAndSubmitConsultation(newPatientUser);

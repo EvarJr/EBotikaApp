@@ -1,6 +1,6 @@
 import { Screens } from './constants';
 
-export type Role = 'patient' | 'guest' | 'doctor' | 'pharmacy' | 'admin' | 'unauthenticated';
+export type Role = 'patient' | 'guest' | 'doctor' | 'pharmacy' | 'admin' | 'unauthenticated' | 'bhw';
 
 export type Language = 'English' | 'Aklanon';
 
@@ -17,6 +17,14 @@ export interface User {
   isOnline?: boolean;
   status: 'active' | 'banned';
   reports?: { doctorId: string; doctorName: string; reason: string; date: string }[];
+}
+
+export interface ResidentRecord {
+  id: string;
+  name: string;
+  contactNumber: string;
+  address: string;
+  validIdUrl?: string;
 }
 
 export type Screen = typeof Screens[keyof typeof Screens];
@@ -57,6 +65,8 @@ export interface IAppContext {
   updateGuestDetails: (details: { name: string, contactNumber: string, address: string, validIdFile: File }) => User;
   updateUserProfile: (updatedUser: Partial<User>) => void;
   addProfessionalUser: (user: Omit<User, 'id' | 'status'>) => void;
+  addResidentRecord: (details: Omit<ResidentRecord, 'id'>) => void;
+  residentRecords: ResidentRecord[];
   updateUserStatus: (userId: string, status: 'active' | 'banned') => void;
   deleteUser: (userId: string) => void;
   addReportToUser: (userId: string, report: { doctorId: string; doctorName: string; reason: string; date: string }) => void;

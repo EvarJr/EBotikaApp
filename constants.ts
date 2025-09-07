@@ -1,4 +1,4 @@
-import type { DoctorProfile, Consultation, Prescription, Medicine, User, ForumPost, PrivateChatMessage, PatientDoctorChatMessage, AISummary, ChatMessage } from './types';
+import type { DoctorProfile, Consultation, Prescription, Medicine, User, ForumPost, PrivateChatMessage, PatientDoctorChatMessage, AISummary, ChatMessage, ResidentRecord } from './types';
 
 export const Screens = {
   WELCOME: 'WELCOME',
@@ -16,6 +16,7 @@ export const Screens = {
   PHARMACY_DASHBOARD: 'PHARMACY_DASHBOARD',
   PHARMACY_SCAN: 'PHARMACY_SCAN',
   RHU_DASHBOARD: 'RHU_DASHBOARD',
+  BHW_DASHBOARD: 'BHW_DASHBOARD',
   PATIENT_DETAIL_MANAGEMENT: 'PATIENT_DETAIL_MANAGEMENT',
   FORUM: 'FORUM',
   PROFESSIONALS_DIRECTORY: 'PROFESSIONALS_DIRECTORY',
@@ -43,6 +44,13 @@ export const MOCK_USERS: User[] = [
     { id: 'd3', name: 'Dr. Gabriela Silang', email: 'doctor3@ebotika.ph', password: 'password', role: 'doctor', avatarUrl: 'https://picsum.photos/id/1011/200/200', isOnline: true, status: 'active' },
     { id: 'ph1', name: 'Botika Pharmacist', email: 'pharmacy@ebotika.ph', password: 'password', role: 'pharmacy', avatarUrl: 'https://picsum.photos/id/10/200/200', isOnline: false, status: 'active' },
     { id: 'a1', name: 'RHU Admin', email: 'admin@ebotika.ph', password: 'password', role: 'admin', avatarUrl: 'https://picsum.photos/id/20/200/200', isOnline: true, status: 'active' },
+    { id: 'bhw1', name: 'BHW Maria Clara', email: 'bhw@ebotika.ph', password: 'password', role: 'bhw', avatarUrl: 'https://picsum.photos/id/30/200/200', isOnline: true, status: 'active' },
+];
+
+export const MOCK_RESIDENT_RECORDS: ResidentRecord[] = [
+    { id: 'res-1', name: 'Juan dela Cruz', contactNumber: '09123456789', address: '123 Rizal Ave, Manila' },
+    { id: 'res-2', name: 'Anna Reyes', contactNumber: '09987654321', address: '456 Bonifacio St, Cebu' },
+    { id: 'res-3', name: 'Pedro Penduko', contactNumber: '09178765432', address: '789 Mabini Blvd, Davao' },
 ];
 
 

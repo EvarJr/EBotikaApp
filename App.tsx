@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { AppContext } from './contexts/AppContext.ts';
-import type { Role, User, Screen, Language, Consultation, ForumPost, PrivateChatMessage, Prescription, DoctorProfile, PatientDoctorChatMessage, ConsultationStatus } from './types';
-import { Screens, CHAT_HISTORY_KEY, SESSION_KEY, MOCK_CONSULTATIONS, MOCK_FORUM_POSTS, MOCK_PRIVATE_CHATS, MOCK_PATIENT_DOCTOR_CHATS, MOCK_PRESCRIPTIONS, MOCK_DOCTORS, MOCK_USERS } from './constants';
+import type { Role, User, Screen, Language, Consultation, ForumPost, PrivateChatMessage, Prescription, DoctorProfile, PatientDoctorChatMessage, ConsultationStatus, ResidentRecord } from './types';
+import { Screens, CHAT_HISTORY_KEY, SESSION_KEY, MOCK_CONSULTATIONS, MOCK_FORUM_POSTS, MOCK_PRIVATE_CHATS, MOCK_PATIENT_DOCTOR_CHATS, MOCK_PRESCRIPTIONS, MOCK_DOCTORS, MOCK_USERS, MOCK_RESIDENT_RECORDS } from './constants';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -15,6 +15,7 @@ import DoctorDashboard from './screens/doctor/DoctorDashboard';
 import PrescriptionFormScreen from './screens/doctor/PrescriptionFormScreen';
 import PharmacyDashboard from './screens/pharmacy/PharmacyDashboard';
 import RHUDashboard from './screens/rhu/RHUDashboard';
+import BHWDashboard from './screens/bhw/BHWDashboard';
 import ForumScreen from './screens/shared/ForumScreen';
 import ProfessionalsDirectoryScreen from './screens/shared/ProfessionalsDirectoryScreen';
 import PrivateChatScreen from './screens/shared/PrivateChatScreen';
@@ -102,6 +103,7 @@ export default function App() {
   const [activePatientForManagement, setActivePatientForManagement] = useState<User | null>(null);
   const [isGuestExitModalOpen, setIsGuestExitModalOpen] = useState(false);
   const [isGuestUpgrading, setIsGuestUpgrading] = useState(false);
+  const [residentRecords, setResidentRecords] = useState<ResidentRecord[]>(MOCK_RESIDENT_RECORDS);
 
   const t = useCallback((key: string, params: { [key: string]: string | number } = {}) => {
     const langKey = language === 'Aklanon' ? 'ak' : 'en';
@@ -164,6 +166,9 @@ export default function App() {
         break;
       case 'admin':
         setScreen(Screens.RHU_DASHBOARD);
+        break;
+      case 'bhw':
+        setScreen(Screens.BHW_DASHBOARD);
         break;
       default:
         setScreen(Screens.WELCOME);
@@ -297,6 +302,14 @@ export default function App() {
     setUsers(prev => [...prev, userWithId]);
   }, []);
 
+  const addResidentRecord = useCallback((details: Omit<ResidentRecord, 'id'>) => {
+    const newRecord: ResidentRecord = {
+      id: `res-${Date.now()}`,
+      ...details,
+    };
+    setResidentRecords(prev => [newRecord, ...prev]);
+  }, []);
+
   const addConsultation = useCallback((consultation: Consultation) => {
     setConsultations(prev => [consultation, ...prev]);
   }, []);
@@ -402,6 +415,8 @@ export default function App() {
     deleteUser,
     addReportToUser,
     addProfessionalUser,
+    residentRecords,
+    addResidentRecord,
     consultations,
     addConsultation,
     updateConsultationStatus,
@@ -426,7 +441,7 @@ export default function App() {
     sendPatientDoctorMessage,
     doctorProfiles,
     updateDoctorAvailability,
-  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, doctorProfiles, updateDoctorAvailability]);
+  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, residentRecords, addResidentRecord, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, doctorProfiles, updateDoctorAvailability]);
 
   const renderScreen = () => {
     switch (screen) {
@@ -467,6 +482,8 @@ export default function App() {
         return <PharmacyScanScreen />;
       case Screens.RHU_DASHBOARD:
         return <RHUDashboard />;
+      case Screens.BHW_DASHBOARD:
+        return <BHWDashboard />;
       case Screens.PATIENT_DETAIL_MANAGEMENT:
         return <PatientDetailScreen />;
       case Screens.FORUM:

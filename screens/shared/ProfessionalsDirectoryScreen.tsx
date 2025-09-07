@@ -1,13 +1,14 @@
 import React from 'react';
 import { useAppContext } from '../../hooks/useAppContext';
 import { Screens } from '../../constants';
-import type { User } from '../../types';
+import type { User, Role } from '../../types';
 import { ArrowLeftIcon } from '../../components/Icons';
 
-const roleColors: { [key in User['role']]: string } = {
+const roleColors: { [key in Role]: string } = {
     doctor: 'bg-blue-100 text-blue-800',
     pharmacy: 'bg-green-100 text-green-800',
     admin: 'bg-purple-100 text-purple-800',
+    bhw: 'bg-orange-100 text-orange-800',
     patient: 'bg-gray-100 text-gray-800',
     guest: 'bg-gray-100 text-gray-800',
     unauthenticated: 'bg-gray-100 text-gray-800',
@@ -67,13 +68,16 @@ const ProfessionalsDirectoryScreen: React.FC = () => {
             case 'admin':
                 navigateTo(Screens.RHU_DASHBOARD);
                 break;
+            case 'bhw':
+                navigateTo(Screens.BHW_DASHBOARD);
+                break;
             default:
                 navigateTo(Screens.WELCOME);
         }
     };
     
     const professionalUsers = users.filter(u => 
-        (u.role === 'doctor' || u.role === 'pharmacy' || u.role === 'admin') && u.id !== user?.id
+        (u.role === 'doctor' || u.role === 'pharmacy' || u.role === 'admin' || u.role === 'bhw') && u.id !== user?.id
     );
 
     return (

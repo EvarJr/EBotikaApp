@@ -6,7 +6,7 @@ import { ArrowLeftIcon, LogoIcon } from '../components/Icons';
 import { useTranslation } from '../hooks/useTranslation';
 
 const RegisterScreen: React.FC = () => {
-    const { login, navigateTo, t, isGuestUpgrading } = useAppContext();
+    const { login, navigateTo, t, isGuestUpgrading, residentRecords } = useAppContext();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -18,6 +18,15 @@ const RegisterScreen: React.FC = () => {
         e.preventDefault();
         if (!name.trim() || !email.trim() || !password.trim() || !phoneNumber.trim() || !address.trim()) {
             alert("Please fill in all fields.");
+            return;
+        }
+        
+        const isVerified = residentRecords.some(record => 
+            record.name.trim().toLowerCase() === name.trim().toLowerCase()
+        );
+
+        if (!isVerified) {
+            alert(t('register_not_verified_error'));
             return;
         }
 
