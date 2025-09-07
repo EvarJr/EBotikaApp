@@ -6,6 +6,7 @@ import { ArrowLeftIcon, SendIcon } from '../../components/Icons';
 import { useTranslation } from '../../hooks/useTranslation';
 
 const ChatBubble: React.FC<{ message: PatientDoctorChatMessage }> = ({ message }) => {
+  const { t } = useTranslation();
   const isPatient = message.sender === 'patient';
   return (
     <div className={`flex ${isPatient ? 'justify-end' : 'justify-start'}`}>
@@ -16,7 +17,7 @@ const ChatBubble: React.FC<{ message: PatientDoctorChatMessage }> = ({ message }
             : 'bg-gray-200 text-gray-800 rounded-bl-none'
         }`}
       >
-        <p className="whitespace-pre-wrap">{message.content}</p>
+        <p className="whitespace-pre-wrap">{t(message.content)}</p>
         <p className={`text-xs mt-1 ${isPatient ? 'text-blue-100' : 'text-gray-500'} text-right`}>
             {message.timestamp.substring(message.timestamp.indexOf(',') + 2)}
         </p>
@@ -60,9 +61,9 @@ const DoctorChatScreen: React.FC = () => {
     if (!activeDoctorChatRecipient) {
         return (
              <div className="flex flex-col h-full items-center justify-center">
-                <p className="text-red-500">Error: No doctor selected for chat.</p>
+                <p className="text-red-500">{t('doctor_chat_error_title')}</p>
                 <button onClick={handleBack} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg">
-                    Back to Home
+                    {t('doctor_chat_error_button')}
                 </button>
             </div>
         );
@@ -77,7 +78,7 @@ const DoctorChatScreen: React.FC = () => {
                 <img src={activeDoctorChatRecipient.avatarUrl} alt={activeDoctorChatRecipient.name} className="w-10 h-10 rounded-full mr-3" />
                 <div>
                     <h1 className="text-xl font-bold text-gray-800">{activeDoctorChatRecipient.name}</h1>
-                    <p className="text-xs text-gray-500 capitalize">{activeDoctorChatRecipient.specialty}</p>
+                    <p className="text-xs text-gray-500 capitalize">{t(activeDoctorChatRecipient.specialty)}</p>
                 </div>
             </header>
             <main className="flex-1 overflow-y-auto p-4 custom-scrollbar">

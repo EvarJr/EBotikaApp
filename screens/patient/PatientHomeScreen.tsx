@@ -40,7 +40,7 @@ const DoctorCard: React.FC<{ doctor: DoctorProfile }> = ({ doctor }) => {
     <div className="flex-shrink-0 w-48 bg-white rounded-xl shadow-lg p-4 text-center mr-4">
       <img src={doctor.avatarUrl} alt={doctor.name} className="w-20 h-20 rounded-full mx-auto border-4 border-teal-100" />
       <h3 className="font-bold text-gray-800 mt-2 truncate">{doctor.name}</h3>
-      <p className="text-xs text-gray-500">{doctor.specialty}</p>
+      <p className="text-xs text-gray-500">{t(doctor.specialty)}</p>
       
       <div className="flex items-center justify-center mt-2">
           <span className={`w-2.5 h-2.5 rounded-full mr-1.5 ${isAvailable ? 'bg-green-500' : 'bg-red-500'}`}></span>

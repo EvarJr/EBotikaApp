@@ -47,9 +47,9 @@ export const MOCK_USERS: User[] = [
 
 
 export const MOCK_DOCTORS: DoctorProfile[] = [
-    { id: '1', userId: 'd1', name: 'Dr. Maria Dela Cruz', specialty: 'General Physician', avatarUrl: 'https://picsum.photos/id/1027/200/200', availability: 'Available' },
-    { id: '2', userId: 'd2', name: 'Dr. Jose Rizal', specialty: 'Pediatrician', avatarUrl: 'https://picsum.photos/id/1005/200/200', availability: 'Available' },
-    { id: '3', userId: 'd3', name: 'Dr. Gabriela Silang', specialty: 'Cardiologist', avatarUrl: 'https://picsum.photos/id/1011/200/200', availability: 'On Leave' },
+    { id: '1', userId: 'd1', name: 'Dr. Maria Dela Cruz', specialty: 'specialty_gp', avatarUrl: 'https://picsum.photos/id/1027/200/200', availability: 'Available' },
+    { id: '2', userId: 'd2', name: 'Dr. Jose Rizal', specialty: 'specialty_pedia', avatarUrl: 'https://picsum.photos/id/1005/200/200', availability: 'Available' },
+    { id: '3', userId: 'd3', name: 'Dr. Gabriela Silang', specialty: 'specialty_cardio', avatarUrl: 'https://picsum.photos/id/1011/200/200', availability: 'On Leave' },
 ];
 
 export const MOCK_MEDICINES: Medicine[] = [
@@ -161,11 +161,11 @@ export const MOCK_PRIVATE_CHATS: { [key: string]: PrivateChatMessage[] } = {
 
 export const MOCK_PATIENT_DOCTOR_CHATS: { [key: string]: PatientDoctorChatMessage[] } = {
     '1': [ // Corresponds to Dr. Maria Dela Cruz
-        { id: 'pdc1', sender: 'patient', content: 'Hello Dr. Dela Cruz, I have a follow-up question about my consultation.', timestamp: new Date('2024-08-03T11:00:00').toLocaleString() },
-        { id: 'pdc2', sender: 'doctor', content: 'Of course, what is your question?', timestamp: new Date('2024-08-03T11:01:00').toLocaleString() },
+        { id: 'pdc1', sender: 'patient', content: 'doctor_chat_mock_patient_1', timestamp: new Date('2024-08-03T11:00:00').toLocaleString() },
+        { id: 'pdc2', sender: 'doctor', content: 'doctor_chat_mock_doctor_1', timestamp: new Date('2024-08-03T11:01:00').toLocaleString() },
     ],
     '2': [ // Corresponds to Dr. Jose Rizal
-        { id: 'pdc3', sender: 'patient', content: 'Hi Doc, is it okay to take the medicine with food?', timestamp: new Date('2024-08-02T17:30:00').toLocaleString() },
+        { id: 'pdc3', sender: 'patient', content: 'doctor_chat_mock_patient_2', timestamp: new Date('2024-08-02T17:30:00').toLocaleString() },
     ]
 };
 

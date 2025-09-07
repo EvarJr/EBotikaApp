@@ -135,6 +135,16 @@ export const translations: Translations = {
 
     // Doctor Chat
     doctor_chat_placeholder: 'Message {name}',
+    doctor_chat_error_title: 'Error: No doctor selected for chat.',
+    doctor_chat_error_button: 'Back to Home',
+    doctor_chat_mock_patient_1: 'Hello Dr. Dela Cruz, I have a follow-up question about my consultation.',
+    doctor_chat_mock_doctor_1: 'Of course, what is your question?',
+    doctor_chat_mock_patient_2: 'Hi Doc, is it okay to take the medicine with food?',
+
+    // Doctor Specialties
+    specialty_gp: 'General Physician',
+    specialty_pedia: 'Pediatrician',
+    specialty_cardio: 'Cardiologist',
     
     // Doctor Dashboard
     doctor_dashboard_queue: 'Queue',
@@ -262,9 +272,9 @@ export const translations: Translations = {
     dashboard_no_activity_prompt: 'Mag-umpisa it symptom check.',
     symptoms_title: 'Ano ro imong nabatyagan?',
     doctors_title: 'Magpakonsulta sa Doktor',
-    doctor_chat_button: 'Chat',
+    doctor_chat_button: 'Makig-chat',
     doctor_status_available: 'Available',
-    doctor_status_on_leave: 'On Leave',
+    doctor_status_on_leave: 'Naga-bakasyon',
     symptom_headache: 'Sakit it Ueo',
     symptom_fever: 'Lagnat',
     symptom_cough: 'Ubo',
@@ -348,6 +358,16 @@ export const translations: Translations = {
 
     // Doctor Chat
     doctor_chat_placeholder: 'Mensahe kay {name}',
+    doctor_chat_error_title: 'Error: Owa it napili nga doktor para sa chat.',
+    doctor_chat_error_button: 'Balik sa Balay',
+    doctor_chat_mock_patient_1: 'Hello Dr. Dela Cruz, may follow-up ako nga pamangkot parte sa akong konsultasyon.',
+    doctor_chat_mock_doctor_1: 'Syempre, ano ro imong pamangkot?',
+    doctor_chat_mock_patient_2: 'Hi Doc, okay eang ba nga imnon ro bueong nga may kaon?',
+    
+    // Doctor Specialties
+    specialty_gp: 'General Physician',
+    specialty_pedia: 'Pediatrician',
+    specialty_cardio: 'Cardiologist',
 
     // Doctor Dashboard
     doctor_dashboard_queue: 'Pila',
