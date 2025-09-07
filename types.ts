@@ -17,6 +17,7 @@ export interface User {
   isOnline?: boolean;
   status: 'active' | 'banned';
   reports?: { doctorId: string; doctorName: string; reason: string; date: string }[];
+  isPremium?: boolean;
 }
 
 export interface ResidentRecord {
@@ -99,6 +100,7 @@ export interface IAppContext {
   markDoctorChatAsRead: (conversationId: string) => void;
   doctorProfiles: DoctorProfile[];
   updateDoctorAvailability: (doctorId: string, availability: 'Available' | 'On Leave') => void;
+  chatAccess: { [conversationId: string]: number };
 }
 
 export interface ChatMessage {

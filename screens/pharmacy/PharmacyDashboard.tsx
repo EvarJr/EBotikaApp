@@ -6,9 +6,10 @@ import { MOCK_PHARMACY_WEEKLY_VALIDATIONS, MOCK_PHARMACY_TOP_MEDS, Screens } fro
 import { useTranslation } from '../../hooks/useTranslation';
 
 const PharmacyDashboard: React.FC = () => {
-    const { user, logout, navigateTo } = useAppContext();
+    const { user, logout, navigateTo, prescriptions } = useAppContext();
     const { t } = useTranslation();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -22,6 +23,47 @@ const PharmacyDashboard: React.FC = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const handleExport = () => {
+        setIsExporting(true);
+
+        const remittedPrescriptions = prescriptions.filter(p => p.status === 'Remitted');
+
+        const escapeCsvCell = (cellData: string | undefined | null): string => {
+            if (cellData === null || cellData === undefined) return '';
+            const str = String(cellData);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return `"${str.replace(/"/g, '""')}"`;
+            }
+            return str;
+        };
+
+        const headers = [
+            'Prescription ID', 'Date Remitted', 'Patient Name', 
+            'Medicine', 'Dosage', 'Issuing Doctor'
+        ];
+
+        const rows = remittedPrescriptions.map(p => [
+            escapeCsvCell(p.id),
+            escapeCsvCell(p.dateIssued), // Assuming dateIssued is the date of remission for this mock
+            escapeCsvCell(p.patient.name),
+            escapeCsvCell(p.medicine),
+            escapeCsvCell(p.dosage),
+            escapeCsvCell(p.doctorName),
+        ].join(','));
+
+        const csvContent = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'ebotika_pharmacy_remitted_export.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => setIsExporting(false), 1000);
+    };
 
     return (
         <div className="flex flex-col h-full">
@@ -111,6 +153,13 @@ const PharmacyDashboard: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                 <button 
+                    onClick={handleExport}
+                    disabled={isExporting}
+                    className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-green-700 transition disabled:bg-green-400"
+                >
+                    {isExporting ? t('pharmacy_exporting_button') : t('pharmacy_export_button')}
+                </button>
             </main>
         </div>
     );

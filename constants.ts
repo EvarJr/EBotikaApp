@@ -39,7 +39,7 @@ export const MOCK_USERS: User[] = [
             { doctorId: 'd1', doctorName: 'Dr. Maria Dela Cruz', reason: 'Abusive language during chat consultation.', date: '2024-07-28' }
         ]
     },
-    { id: 'p3', name: 'Pedro Penduko', email: 'pedro@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09178765432', address: '789 Mabini Blvd, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/433/200/200', status: 'active' },
+    { id: 'p3', name: 'Pedro Penduko', email: 'pedro@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09178765432', address: '789 Mabini Blvd, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/433/200/200', status: 'active', isPremium: true },
     { id: 'p4', name: 'Carlos Santos', email: 'carlos@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09112223344', address: '111 National Road, Brgy. Aparicio, Aklan', avatarUrl: 'https://picsum.photos/id/111/200/200', status: 'active' },
     { id: 'p5', name: 'Lina Gomez', email: 'lina@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09223334455', address: '222 Farm Trail, Brgy. Monlaque, Aklan', avatarUrl: 'https://picsum.photos/id/222/200/200', status: 'active' },
     { id: 'p6', name: 'Ramon Garcia', email: 'ramon@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09334445566', address: '333 Seaside View, Brgy. Colongcolong, Aklan', avatarUrl: 'https://picsum.photos/id/333/200/200', status: 'active' },
@@ -137,6 +137,16 @@ export const MOCK_PHARMACY_TOP_MEDS = [
     { name: 'Loratadine 10mg Tablet', count: 76 },
     { name: 'Salbutamol Nebule', count: 65 },
     { name: 'Mefenamic Acid 500mg', count: 52 },
+];
+
+export const MOCK_BHW_WEEKLY_RECORDS_ADDED = [
+    { day: 'Mon', count: 3 },
+    { day: 'Tue', count: 5 },
+    { day: 'Wed', count: 2 },
+    { day: 'Thu', count: 7 },
+    { day: 'Fri', count: 4 },
+    { day: 'Sat', count: 1 },
+    { day: 'Sun', count: 0 },
 ];
 
 const MOCK_DOCTOR_USER = MOCK_USERS.find(u => u.email === 'doctor@ebotika.ph')!;

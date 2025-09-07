@@ -119,6 +119,10 @@ export const translations: Translations = {
     profile_cancel_button: 'Cancel',
     profile_change_avatar_button: 'Change',
     profile_updated_alert: 'Your profile has been updated successfully.',
+    profile_premium_badge: 'Premium Member',
+    profile_upgrade_prompt_title: 'Upgrade to Premium',
+    profile_upgrade_prompt_text: 'Get unlimited, anytime chat access with all doctors.',
+    profile_upgrade_button: 'Upgrade Now',
     
     // AI Summary Card
     ai_summary_title: 'AI Triage Summary',
@@ -150,6 +154,11 @@ export const translations: Translations = {
     doctor_chat_mock_patient_1: 'Hello Dr. Dela Cruz, I have a follow-up question about my consultation.',
     doctor_chat_mock_doctor_1: 'Of course, what is your question?',
     doctor_chat_mock_patient_2: 'Hi Doc, is it okay to take the medicine with food?',
+    chat_premium_status: 'Premium Access: Unlimited chat.',
+    chat_time_left_status: 'Free chat time remaining: {time}',
+    chat_locked_status: 'Chat locked. Access renews in {days}d {hours}h.',
+    chat_start_free_day_status: 'You have a free 1-day chat pass. Send a message to start.',
+
 
     // Doctor Specialties
     specialty_gp: 'General Physician',
@@ -192,6 +201,10 @@ export const translations: Translations = {
     doctor_inbox_select_prompt: "Select a conversation to view messages.",
     doctor_inbox_unknown_barangay: "Unknown Barangay",
 
+    // Pharmacy Dashboard
+    pharmacy_export_button: 'Export as CSV',
+    pharmacy_exporting_button: 'Exporting...',
+
     // Floating Action Button
     fab_chat_with_bot: 'Chat with Ebo',
 
@@ -229,6 +242,12 @@ export const translations: Translations = {
     bhw_record_created_alert: 'Resident record for {name} has been created successfully.',
     bhw_delete_confirm_title: 'Confirm Deletion',
     bhw_delete_confirm_text: "Are you sure you want to delete the record for {name}? This action cannot be undone.",
+    bhw_analytics_title: "Analytics & Activity",
+    bhw_weekly_chart_title: "Weekly Records Added",
+    bhw_distribution_title: "Resident Distribution by Barangay",
+    bhw_activity_title: "Recent Activity",
+    bhw_export_button: "Export as CSV",
+    bhw_exporting_button: "Exporting...",
 
     // RHU Patient Detail Management
     patient_detail_title: "Patient Account Details",
@@ -383,6 +402,10 @@ export const translations: Translations = {
     profile_cancel_button: 'Kanselahon',
     profile_change_avatar_button: 'Bag-uhon',
     profile_updated_alert: 'Ro imong propayl hay madinaeag-on nga na-update.',
+    profile_premium_badge: 'Miyembro nga Premium',
+    profile_upgrade_prompt_title: 'Mag-upgrade sa Premium',
+    profile_upgrade_prompt_text: 'Maka-access sa owa’t-limite nga chat sa tanan nga mga doktor.',
+    profile_upgrade_button: 'Mag-upgrade',
     
     // AI Summary Card
     ai_summary_title: 'AI Triage Summary',
@@ -414,6 +437,10 @@ export const translations: Translations = {
     doctor_chat_mock_patient_1: 'Hello Dr. Dela Cruz, may follow-up ako nga pamangkot parte sa akong konsultasyon.',
     doctor_chat_mock_doctor_1: 'Syempre, ano ro imong pamangkot?',
     doctor_chat_mock_patient_2: 'Hi Doc, okay eang ba nga imnon ro bueong nga may kaon?',
+    chat_premium_status: 'Premium Access: Owa’t-limite nga chat.',
+    chat_time_left_status: 'Nabilin nga oras para sa libreng chat: {time}',
+    chat_locked_status: 'Naka-lock ro chat. Mabalik ro access sa sueod it {days}d {hours}h.',
+    chat_start_free_day_status: 'May libre ka nga 1-adlaw nga chat pass. Magpadara it mensahe para mag-umpisa.',
     
     // Doctor Specialties
     specialty_gp: 'General Physician',
@@ -456,6 +483,10 @@ export const translations: Translations = {
     doctor_inbox_select_prompt: "Magpili it pag-istoryahan para makita ro mga mensahe.",
     doctor_inbox_unknown_barangay: "Owa Masayuri nga Barangay",
 
+    // Pharmacy Dashboard
+    pharmacy_export_button: 'I-export bilang CSV',
+    pharmacy_exporting_button: 'Gina-export...',
+
     // Floating Action Button
     fab_chat_with_bot: 'Makig-chat kay Ebo',
     
@@ -493,6 +524,12 @@ export const translations: Translations = {
     bhw_record_created_alert: 'Ro rekord para kay {name} hay madinaeag-on nga nahimo.',
     bhw_delete_confirm_title: 'Kumpirmahon ro Pagpanas',
     bhw_delete_confirm_text: "Sigurado ka gid bala nga gusto mong panason ro rekord para kay {name}? Indi eon raya mabawi.",
+    bhw_analytics_title: "Mga Analitiko ag Aktibidad",
+    bhw_weekly_chart_title: "Mga Rekord nga Gindugang kada Semana",
+    bhw_distribution_title: "Distribusyon it Residente kada Barangay",
+    bhw_activity_title: "Mga Ulihing Aktibidad",
+    bhw_export_button: "I-export bilang CSV",
+    bhw_exporting_button: "Gina-export...",
 
     // RHU Patient Detail Management
     patient_detail_title: "Mga Detalye it Account it Pasyente",

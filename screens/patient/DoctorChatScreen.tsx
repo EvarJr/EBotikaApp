@@ -35,13 +35,59 @@ const DoctorChatScreen: React.FC = () => {
         activeDoctorChatRecipient, 
         patientDoctorChats, 
         sendPatientDoctorMessage, 
-        setActiveDoctorChatRecipient 
+        setActiveDoctorChatRecipient,
+        chatAccess
     } = useAppContext();
     const { t } = useTranslation();
     const [newMessage, setNewMessage] = useState('');
     const chatEndRef = useRef<HTMLDivElement>(null);
+    const [isLocked, setIsLocked] = useState(false);
+    const [statusMessage, setStatusMessage] = useState('');
 
     const conversationId = user && activeDoctorChatRecipient ? [user.id, activeDoctorChatRecipient.userId].sort().join('-') : null;
+
+    useEffect(() => {
+        if (!conversationId || !user) return;
+        
+        if (user.isPremium) {
+            setIsLocked(false);
+            setStatusMessage(t('chat_premium_status'));
+            return;
+        }
+    
+        const chatStartTime = chatAccess[conversationId];
+        if (!chatStartTime) {
+            setIsLocked(false);
+            setStatusMessage(t('chat_start_free_day_status'));
+            return;
+        }
+
+        const interval = setInterval(() => {
+            const now = Date.now();
+            const oneDay = 24 * 60 * 60 * 1000;
+            const oneWeek = 7 * oneDay;
+            const elapsed = now - chatStartTime;
+
+            if (elapsed < oneDay) {
+                setIsLocked(false);
+                const remaining = oneDay - elapsed;
+                const hours = Math.floor(remaining / (1000 * 60 * 60));
+                const minutes = Math.floor((remaining / 1000 / 60) % 60);
+                setStatusMessage(t('chat_time_left_status', { time: `${hours}h ${minutes}m` }));
+            } else if (elapsed < oneWeek) {
+                setIsLocked(true);
+                const remaining = oneWeek - elapsed;
+                const days = Math.floor(remaining / oneDay);
+                const hours = Math.floor((remaining % oneDay) / (1000 * 60 * 60));
+                setStatusMessage(t('chat_locked_status', { days, hours }));
+            } else {
+                setIsLocked(false);
+                setStatusMessage(t('chat_start_free_day_status'));
+            }
+        }, 1000);
+    
+        return () => clearInterval(interval);
+    }, [chatAccess, conversationId, user, t]);
 
     const scrollToBottom = () => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -87,6 +133,13 @@ const DoctorChatScreen: React.FC = () => {
                     <p className="text-xs text-gray-500 capitalize">{t(activeDoctorChatRecipient.specialty)}</p>
                 </div>
             </header>
+
+            {statusMessage && (
+                <div className="p-2 text-center text-xs font-semibold text-white bg-teal-500 z-10">
+                    {statusMessage}
+                </div>
+            )}
+
             <main className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                  <div className="space-y-4">
                     {messages.map(msg => <ChatBubble key={msg.id} message={msg} />)}
@@ -101,11 +154,12 @@ const DoctorChatScreen: React.FC = () => {
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                         placeholder={t('doctor_chat_placeholder', { name: activeDoctorChatRecipient.name })}
-                        className="flex-1 p-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="flex-1 p-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:bg-gray-100"
+                        disabled={isLocked}
                     />
                     <button
                         onClick={handleSend}
-                        disabled={!newMessage.trim()}
+                        disabled={isLocked || !newMessage.trim()}
                         className="bg-teal-500 text-white rounded-full p-3 disabled:bg-gray-300 hover:bg-teal-600 transition"
                     >
                         <SendIcon />

@@ -105,6 +105,8 @@ export default function App() {
   const [isGuestExitModalOpen, setIsGuestExitModalOpen] = useState(false);
   const [isGuestUpgrading, setIsGuestUpgrading] = useState(false);
   const [residentRecords, setResidentRecords] = useState<ResidentRecord[]>(MOCK_RESIDENT_RECORDS);
+  const [chatAccess, setChatAccess] = useState<{ [conversationId: string]: number }>({});
+
 
   const t = useCallback((key: string, params: { [key: string]: string | number } = {}) => {
     const langKey = language === 'Aklanon' ? 'ak' : 'en';
@@ -375,6 +377,29 @@ export default function App() {
     if (!user || user.role !== 'patient') return;
 
     const conversationId = [user.id, doctorId].sort().join('-');
+
+    if (!user.isPremium) {
+        const chatStartTime = chatAccess[conversationId];
+        const now = Date.now();
+        const oneDay = 24 * 60 * 60 * 1000;
+        const oneWeek = 7 * oneDay;
+
+        if (!chatStartTime) {
+            // First message of a new cycle, start the timer
+            setChatAccess(prev => ({ ...prev, [conversationId]: now }));
+        } else {
+            const elapsed = now - chatStartTime;
+            if (elapsed > oneDay && elapsed < oneWeek) {
+                // Locked out
+                return; 
+            } else if (elapsed >= oneWeek) {
+                // Cooldown is over, reset the timer
+                setChatAccess(prev => ({ ...prev, [conversationId]: now }));
+            }
+            // Otherwise, user is within the 24-hour window, so we allow the message
+        }
+    }
+
     const newMessage: PatientDoctorChatMessage = {
         id: `pdcm-${Date.now()}`,
         sender: 'patient',
@@ -388,7 +413,7 @@ export default function App() {
         const existingMessages = prev[conversationId] || [];
         return { ...prev, [conversationId]: [...existingMessages, newMessage] };
     });
-  }, [user]);
+  }, [user, chatAccess]);
 
   const sendDoctorPatientMessage = useCallback((patientId: string, content: string) => {
     if (!user || user.role !== 'doctor') return;
@@ -483,7 +508,8 @@ export default function App() {
     markDoctorChatAsRead,
     doctorProfiles,
     updateDoctorAvailability,
-  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, residentRecords, addResidentRecord, deleteResidentRecord, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, sendDoctorPatientMessage, markDoctorChatAsRead, doctorProfiles, updateDoctorAvailability]);
+    chatAccess,
+  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, residentRecords, addResidentRecord, deleteResidentRecord, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, sendDoctorPatientMessage, markDoctorChatAsRead, doctorProfiles, updateDoctorAvailability, chatAccess]);
 
   const renderScreen = () => {
     switch (screen) {

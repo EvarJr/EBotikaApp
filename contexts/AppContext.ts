@@ -58,6 +58,7 @@ export const initialAppContext: IAppContext = {
   markDoctorChatAsRead: () => console.warn('markDoctorChatAsRead function not yet initialized'),
   doctorProfiles: [],
   updateDoctorAvailability: () => console.warn('updateDoctorAvailability function not yet initialized'),
+  chatAccess: {},
 };
 
 export const AppContext = createContext<IAppContext>(initialAppContext);

@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppContext } from '../../hooks/useAppContext';
-import { Screens } from '../../constants';
+import { Screens, MOCK_BHW_WEEKLY_RECORDS_ADDED } from '../../constants';
 import { useTranslation } from '../../hooks/useTranslation';
 import type { ResidentRecord } from '../../types';
 import { TrashIcon } from '../../components/Icons';
+import { MockChart } from '../../components/Dashboard';
 
 const AddResidentRecordModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { addResidentRecord, t } = useAppContext();
@@ -116,12 +117,19 @@ const ResidentRecordCard: React.FC<{ record: ResidentRecord; onDelete: () => voi
     );
 };
 
+const parseBarangayFromAddress = (address: string | undefined): string => {
+    if (!address) return 'Unknown';
+    const match = address.match(/Brgy\.\s*([^,]+)/i);
+    return match ? match[1].trim() : 'Unknown';
+};
+
 
 const BHWDashboard: React.FC = () => {
     const { user, logout, navigateTo, t, residentRecords, deleteResidentRecord } = useAppContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState<ResidentRecord | null>(null);
+    const [isExporting, setIsExporting] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -142,6 +150,47 @@ const BHWDashboard: React.FC = () => {
             setRecordToDelete(null);
         }
     };
+
+    const residentDistribution = residentRecords.reduce((acc, record) => {
+        const barangay = parseBarangayFromAddress(record.address);
+        acc[barangay] = (acc[barangay] || 0) + 1;
+        return acc;
+    }, {} as Record<string, number>);
+
+    const handleExport = () => {
+        setIsExporting(true);
+
+        const escapeCsvCell = (cellData: string | undefined | null): string => {
+            if (cellData === null || cellData === undefined) return '';
+            const str = String(cellData);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return `"${str.replace(/"/g, '""')}"`;
+            }
+            return str;
+        };
+
+        const headers = ['Record ID', 'Full Name', 'Contact Number', 'Address'];
+
+        const rows = residentRecords.map(r => [
+            escapeCsvCell(r.id),
+            escapeCsvCell(r.name),
+            escapeCsvCell(r.contactNumber),
+            escapeCsvCell(r.address),
+        ].join(','));
+
+        const csvContent = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'ebotika_bhw_resident_masterlist.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => setIsExporting(false), 1000);
+    };
+
 
     return (
         <div className="relative flex flex-col h-full">
@@ -206,19 +255,17 @@ const BHWDashboard: React.FC = () => {
                     </button>
                  </div>
             </header>
-            <main className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4 custom-scrollbar">
-                <div className="bg-white p-4 rounded-lg shadow">
-                    <button 
-                        onClick={() => setIsModalOpen(true)}
-                        className="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow hover:bg-blue-600 transition mb-3"
-                    >
-                        {t('bhw_add_resident_record_button')}
-                    </button>
-                </div>
-
+            <main className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-6 custom-scrollbar">
+                <button 
+                    onClick={() => setIsModalOpen(true)}
+                    className="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow hover:bg-blue-600 transition"
+                >
+                    {t('bhw_add_resident_record_button')}
+                </button>
+                
                 <div className="bg-white p-4 rounded-lg shadow">
                     <h2 className="font-bold text-lg text-gray-800 mb-2">{t('bhw_resident_record_list_title')} ({residentRecords.length})</h2>
-                    <div className="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
+                    <div className="space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
                         {residentRecords.length > 0 ? (
                             residentRecords.map(record => (
                                 <ResidentRecordCard 
@@ -232,6 +279,44 @@ const BHWDashboard: React.FC = () => {
                         )}
                     </div>
                 </div>
+                
+                <div>
+                    <h2 className="text-xl font-bold text-gray-800 mb-3">{t('bhw_analytics_title')}</h2>
+                    
+                    <div className="space-y-4">
+                        <MockChart data={MOCK_BHW_WEEKLY_RECORDS_ADDED} title={t('bhw_weekly_chart_title')} />
+
+                        <div className="bg-white p-4 rounded-lg shadow">
+                            <h3 className="font-bold text-gray-700 mb-2">{t('bhw_distribution_title')}</h3>
+                            <div className="text-gray-600 text-sm space-y-1">
+                                {Object.entries(residentDistribution).map(([barangay, count]) => (
+                                    <div key={barangay} className="flex justify-between">
+                                        <span>{barangay}</span>
+                                        <span className="font-semibold">{count} residents</span>
+                                    </div>
+                                ))}
+                                {Object.keys(residentDistribution).length === 0 && <p className="text-center text-gray-500">No records to analyze.</p>}
+                            </div>
+                        </div>
+                    
+                        <div className="bg-white p-3 rounded-lg shadow">
+                             <h3 className="font-bold text-gray-700 mb-2">{t('bhw_activity_title')}</h3>
+                            <div className="space-y-2 text-sm">
+                                <p>✅ Added: Ramon Garcia</p>
+                                <p>✅ Added: Lina Gomez</p>
+                                <p>🗑️ Deleted: A temporary record</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button 
+                    onClick={handleExport}
+                    disabled={isExporting}
+                    className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-green-700 transition disabled:bg-green-400"
+                >
+                    {isExporting ? t('bhw_exporting_button') : t('bhw_export_button')}
+                </button>
             </main>
         </div>
     );
