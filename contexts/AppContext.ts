@@ -27,6 +27,7 @@ export const initialAppContext: IAppContext = {
   updateUserProfile: () => console.warn('updateUserProfile function not yet initialized'),
   addProfessionalUser: () => console.warn('addProfessionalUser function not yet initialized'),
   addResidentRecord: () => console.warn('addResidentRecord function not yet initialized'),
+  deleteResidentRecord: () => console.warn('deleteResidentRecord function not yet initialized'),
   residentRecords: [],
   updateUserStatus: () => console.warn('updateUserStatus function not yet initialized'),
   deleteUser: () => console.warn('deleteUser function not yet initialized'),
@@ -53,6 +54,8 @@ export const initialAppContext: IAppContext = {
   setActiveDoctorChatRecipient: () => console.warn('setActiveDoctorChatRecipient not yet initialized'),
   patientDoctorChats: {},
   sendPatientDoctorMessage: () => console.warn('sendPatientDoctorMessage function not yet initialized'),
+  sendDoctorPatientMessage: () => console.warn('sendDoctorPatientMessage function not yet initialized'),
+  markDoctorChatAsRead: () => console.warn('markDoctorChatAsRead function not yet initialized'),
   doctorProfiles: [],
   updateDoctorAvailability: () => console.warn('updateDoctorAvailability function not yet initialized'),
 };

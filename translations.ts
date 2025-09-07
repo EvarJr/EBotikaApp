@@ -159,6 +159,10 @@ export const translations: Translations = {
     doctor_dashboard_queue: 'Queue',
     doctor_dashboard_history: 'History',
     doctor_status_label: 'Your Status:',
+    doctor_dashboard_messages_title: 'Patient Messages',
+    doctor_dashboard_messages_prompt: 'You have unread messages in your patient chat inbox.',
+    doctor_dashboard_messages_button: 'View Messages',
+    doctor_dashboard_unread_messages: '{count} Unread',
     ai_chat_transcript_title: 'AI Chat Transcript',
     deny_modal_title: "Provide Reason for Denial",
     deny_modal_prompt: "Please provide your diagnosis or reason for denying the AI's suggestion. This will be shared with the patient.",
@@ -180,25 +184,40 @@ export const translations: Translations = {
     report_modal_submit_button: "Submit Report",
     report_success_alert: "Patient has been reported. The RHU administrator will review the case.",
 
+    // Doctor Inbox
+    doctor_inbox_title: "Patient Inbox",
+    doctor_inbox_barangay_header: "Barangay: {name}",
+    doctor_inbox_empty: "No patient messages found.",
+    doctor_inbox_select_prompt: "Select a conversation to view messages.",
+    doctor_inbox_unknown_barangay: "Unknown Barangay",
+
     // Floating Action Button
     fab_chat_with_bot: 'Chat with Ebo',
 
     // RHU Dashboard - User Management
-    rhu_user_management_title: 'Professional User Management',
-    rhu_add_user_button: 'Add Professional User',
-    rhu_modal_title: 'Create Professional Account',
+    rhu_doctor_management_title: 'Doctor User Management',
+    rhu_pharmacy_management_section_title: 'Pharmacy User Management',
+    rhu_bhw_management_section_title: 'BHW User Management',
+    rhu_add_doctor_button: 'Add Doctor User',
+    rhu_add_pharmacy_button: 'Add Pharmacy User',
+    rhu_add_bhw_button: 'Add BHW User',
+    rhu_modal_doctor_title: 'Create Doctor Account',
+    rhu_modal_pharmacy_title: 'Create Pharmacy Account',
+    rhu_modal_bhw_title: 'Create BHW Account',
     rhu_modal_role_label: 'Role',
     rhu_modal_role_doctor: 'Doctor',
     rhu_modal_role_pharmacy: 'Pharmacy',
+    rhu_modal_role_bhw: 'BHW',
     rhu_modal_create_button: 'Create User',
     rhu_user_created_alert: 'User {name} has been created successfully.',
-    rhu_user_list_title: 'Registered Professionals',
     rhu_patient_management_title: 'Patient Account Management',
     rhu_patient_list_title: 'Registered Patients',
     rhu_export_button: 'Export as CSV',
     rhu_exporting_button: 'Exporting...',
     rhu_show_management_button: 'Show User Management',
     rhu_hide_management_button: 'Hide User Management',
+    rhu_delete_user_confirm_title: 'Confirm Deletion',
+    rhu_delete_user_confirm_text: "Are you sure you want to permanently delete the account for {name}? This action cannot be undone.",
 
     // BHW Dashboard
     bhw_dashboard_title: 'BHW Dashboard',
@@ -207,6 +226,7 @@ export const translations: Translations = {
     bhw_modal_add_title: 'Add New Resident Record',
     bhw_modal_add_button: 'Add Record',
     bhw_record_created_alert: 'Resident record for {name} has been created successfully.',
+    bhw_delete_confirm_text: "Are you sure you want to delete this resident record? This action cannot be undone.",
 
     // RHU Patient Detail Management
     patient_detail_title: "Patient Account Details",
@@ -401,6 +421,10 @@ export const translations: Translations = {
     doctor_dashboard_queue: 'Pila',
     doctor_dashboard_history: 'Kasaysayan',
     doctor_status_label: 'Imong Status:',
+    doctor_dashboard_messages_title: 'Mga Mensahe it Pasyente',
+    doctor_dashboard_messages_prompt: 'May owa ka pa nabasa nga mga mensahe sa imong inbox.',
+    doctor_dashboard_messages_button: 'Tan-awon ro mga Mensahe',
+    doctor_dashboard_unread_messages: '{count} owa pa Nabasa',
     ai_chat_transcript_title: 'Transcript it Chat sa AI',
     deny_modal_title: "Maghatag it Rason sa Pagdinay",
     deny_modal_prompt: "Palihog, ihatag ro imong diagnosis o rason sa pagdinay sa suhestiyon it AI. Raya hay ipaabot sa pasyente.",
@@ -422,25 +446,40 @@ export const translations: Translations = {
     report_modal_submit_button: "I-submit ro Report",
     report_success_alert: "Ro pasyente hay na-report eon. Pagareviewhon it RHU administrator ro kaso.",
 
+    // Doctor Inbox
+    doctor_inbox_title: "Inbox it Pasyente",
+    doctor_inbox_barangay_header: "Barangay: {name}",
+    doctor_inbox_empty: "Owa't nakita nga mensahe it pasyente.",
+    doctor_inbox_select_prompt: "Magpili it pag-istoryahan para makita ro mga mensahe.",
+    doctor_inbox_unknown_barangay: "Owa Masayuri nga Barangay",
+
     // Floating Action Button
     fab_chat_with_bot: 'Makig-chat kay Ebo',
     
     // RHU Dashboard - User Management
-    rhu_user_management_title: 'Pagdumaea it Propesyonal nga Gumagamit',
-    rhu_add_user_button: 'Magdugang it Propesyonal nga Gumagamit',
-    rhu_modal_title: 'Maghimo it Propesyonal nga Account',
+    rhu_doctor_management_title: 'Pagdumaea it Gumagamit nga Doktor',
+    rhu_pharmacy_management_section_title: 'Pagdumaea it Gumagamit nga Parmasya',
+    rhu_bhw_management_section_title: 'Pagdumaea it Gumagamit nga BHW',
+    rhu_add_doctor_button: 'Magdugang it Gumagamit nga Doktor',
+    rhu_add_pharmacy_button: 'Magdugang it Gumagamit nga Parmasya',
+    rhu_add_bhw_button: 'Magdugang it Gumagamit nga BHW',
+    rhu_modal_doctor_title: 'Maghimo it Account it Doktor',
+    rhu_modal_pharmacy_title: 'Maghimo it Account it Parmasya',
+    rhu_modal_bhw_title: 'Maghimo it Account it BHW',
     rhu_modal_role_label: 'Katungdanan',
     rhu_modal_role_doctor: 'Doktor',
     rhu_modal_role_pharmacy: 'Parmasya',
+    rhu_modal_role_bhw: 'BHW',
     rhu_modal_create_button: 'Maghimo it Gumagamit',
     rhu_user_created_alert: 'Ro gumagamit {name} hay madinaeag-on nga nahimo.',
-    rhu_user_list_title: 'Mga Rehistradong Propesyonal',
     rhu_patient_management_title: 'Pagdumaea it Account it Pasyente',
     rhu_patient_list_title: 'Mga Rehistradong Pasyente',
     rhu_export_button: 'I-export bilang CSV',
     rhu_exporting_button: 'Gina-export...',
     rhu_show_management_button: 'Ipakita ro Pagdumaea',
     rhu_hide_management_button: 'Taguon ro Pagdumaea',
+    rhu_delete_user_confirm_title: 'Kumpirmahon ro Pagpanas',
+    rhu_delete_user_confirm_text: "Sigurado ka gid bala nga gusto mong permanenteng panason ro account para kay {name}? Indi eon raya mabawi.",
 
     // BHW Dashboard
     bhw_dashboard_title: 'BHW Dashboard',
@@ -449,6 +488,7 @@ export const translations: Translations = {
     bhw_modal_add_title: 'Magdugang it Bag-ong Rekord it Residente',
     bhw_modal_add_button: 'Idugang ro Rekord',
     bhw_record_created_alert: 'Ro rekord para kay {name} hay madinaeag-on nga nahimo.',
+    bhw_delete_confirm_text: "Sigurado ka gid bala nga gusto mong panason ro rekord it residente nga raya? Indi eon raya mabawi.",
 
     // RHU Patient Detail Management
     patient_detail_title: "Mga Detalye it Account it Pasyente",

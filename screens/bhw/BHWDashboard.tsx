@@ -3,6 +3,7 @@ import { useAppContext } from '../../hooks/useAppContext';
 import { Screens } from '../../constants';
 import { useTranslation } from '../../hooks/useTranslation';
 import type { ResidentRecord } from '../../types';
+import { TrashIcon } from '../../components/Icons';
 
 const AddResidentRecordModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { addResidentRecord, t } = useAppContext();
@@ -69,14 +70,32 @@ const AddResidentRecordModal: React.FC<{ onClose: () => void }> = ({ onClose }) 
     );
 };
 
-const ResidentRecordCard: React.FC<{ record: ResidentRecord }> = ({ record }) => (
-    <div className="w-full text-left bg-gray-50 p-2 rounded-md flex justify-between items-center text-sm">
-        <div>
-            <p className="font-semibold text-gray-800">{record.name}</p>
-            <p className="text-gray-500">{record.address}</p>
+const ResidentRecordCard: React.FC<{ record: ResidentRecord }> = ({ record }) => {
+    const { deleteResidentRecord, t } = useAppContext();
+
+    const handleDelete = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (window.confirm(t('bhw_delete_confirm_text'))) {
+            deleteResidentRecord(record.id);
+        }
+    };
+
+    return (
+        <div className="w-full text-left bg-gray-50 p-2 rounded-md flex justify-between items-center text-sm">
+            <div>
+                <p className="font-semibold text-gray-800">{record.name}</p>
+                <p className="text-gray-500">{record.address}</p>
+            </div>
+            <button
+                onClick={handleDelete}
+                className="p-2 text-red-500 hover:bg-red-100 rounded-full transition-colors"
+                aria-label={`Delete record for ${record.name}`}
+            >
+                <TrashIcon />
+            </button>
         </div>
-    </div>
-);
+    );
+};
 
 
 const BHWDashboard: React.FC = () => {

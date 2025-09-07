@@ -12,6 +12,7 @@ import ConsultsScreen from './screens/patient/ConsultsScreen';
 import PrescriptionsScreen from './screens/patient/PrescriptionsScreen';
 import ProfileScreen from './screens/patient/ProfileScreen';
 import DoctorDashboard from './screens/doctor/DoctorDashboard';
+import DoctorInboxScreen from './screens/doctor/DoctorInboxScreen';
 import PrescriptionFormScreen from './screens/doctor/PrescriptionFormScreen';
 import PharmacyDashboard from './screens/pharmacy/PharmacyDashboard';
 import RHUDashboard from './screens/rhu/RHUDashboard';
@@ -98,7 +99,7 @@ export default function App() {
   const [activePrivateChatRecipient, setActivePrivateChatRecipient] = useState<User | null>(null);
   const [privateChats, setPrivateChats] = useState<{ [conversationId: string]: PrivateChatMessage[] }>(MOCK_PRIVATE_CHATS);
   const [activeDoctorChatRecipient, setActiveDoctorChatRecipient] = useState<DoctorProfile | null>(null);
-  const [patientDoctorChats, setPatientDoctorChats] = useState<{ [doctorId: string]: PatientDoctorChatMessage[] }>(MOCK_PATIENT_DOCTOR_CHATS);
+  const [patientDoctorChats, setPatientDoctorChats] = useState<{ [conversationId: string]: PatientDoctorChatMessage[] }>(MOCK_PATIENT_DOCTOR_CHATS);
   const [doctorProfiles, setDoctorProfiles] = useState<DoctorProfile[]>(MOCK_DOCTORS);
   const [activePatientForManagement, setActivePatientForManagement] = useState<User | null>(null);
   const [isGuestExitModalOpen, setIsGuestExitModalOpen] = useState(false);
@@ -310,6 +311,10 @@ export default function App() {
     setResidentRecords(prev => [newRecord, ...prev]);
   }, []);
 
+  const deleteResidentRecord = useCallback((recordId: string) => {
+    setResidentRecords(prev => prev.filter(record => record.id !== recordId));
+  }, []);
+
   const addConsultation = useCallback((consultation: Consultation) => {
     setConsultations(prev => [consultation, ...prev]);
   }, []);
@@ -367,23 +372,57 @@ export default function App() {
   }, [user]);
 
   const sendPatientDoctorMessage = useCallback((doctorId: string, content: string) => {
-    if (!user) return;
+    if (!user || user.role !== 'patient') return;
 
+    const conversationId = [user.id, doctorId].sort().join('-');
     const newMessage: PatientDoctorChatMessage = {
         id: `pdcm-${Date.now()}`,
         sender: 'patient',
         content,
         timestamp: new Date().toLocaleString(),
+        readByPatient: true,
+        readByDoctor: false,
     };
 
     setPatientDoctorChats(prev => {
-        const existingMessages = prev[doctorId] || [];
-        return {
-            ...prev,
-            [doctorId]: [...existingMessages, newMessage]
-        };
+        const existingMessages = prev[conversationId] || [];
+        return { ...prev, [conversationId]: [...existingMessages, newMessage] };
     });
   }, [user]);
+
+  const sendDoctorPatientMessage = useCallback((patientId: string, content: string) => {
+    if (!user || user.role !== 'doctor') return;
+
+    const conversationId = [user.id, patientId].sort().join('-');
+    const newMessage: PatientDoctorChatMessage = {
+        id: `pdcm-${Date.now()}`,
+        sender: 'doctor',
+        content,
+        timestamp: new Date().toLocaleString(),
+        readByPatient: false,
+        readByDoctor: true,
+    };
+
+    setPatientDoctorChats(prev => {
+        const existingMessages = prev[conversationId] || [];
+        return { ...prev, [conversationId]: [...existingMessages, newMessage] };
+    });
+  }, [user]);
+  
+  const markDoctorChatAsRead = useCallback((conversationId: string) => {
+    setPatientDoctorChats(prev => {
+        const currentChat = prev[conversationId];
+        if (!currentChat) return prev;
+        
+        const updatedChat = currentChat.map(msg => 
+            msg.sender === 'patient' && !msg.readByDoctor 
+            ? { ...msg, readByDoctor: true } 
+            : msg
+        );
+        
+        return { ...prev, [conversationId]: updatedChat };
+    });
+  }, []);
 
   const updateDoctorAvailability = useCallback((doctorId: string, availability: 'Available' | 'On Leave') => {
     setDoctorProfiles(prev => prev.map(doc => 
@@ -417,6 +456,7 @@ export default function App() {
     addProfessionalUser,
     residentRecords,
     addResidentRecord,
+    deleteResidentRecord,
     consultations,
     addConsultation,
     updateConsultationStatus,
@@ -439,9 +479,11 @@ export default function App() {
     setActiveDoctorChatRecipient,
     patientDoctorChats,
     sendPatientDoctorMessage,
+    sendDoctorPatientMessage,
+    markDoctorChatAsRead,
     doctorProfiles,
     updateDoctorAvailability,
-  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, residentRecords, addResidentRecord, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, doctorProfiles, updateDoctorAvailability]);
+  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, residentRecords, addResidentRecord, deleteResidentRecord, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, sendDoctorPatientMessage, markDoctorChatAsRead, doctorProfiles, updateDoctorAvailability]);
 
   const renderScreen = () => {
     switch (screen) {
@@ -472,6 +514,8 @@ export default function App() {
           return <PatientConsultationDetailScreen />;
       case Screens.DOCTOR_DASHBOARD:
         return <DoctorDashboard />;
+      case Screens.DOCTOR_INBOX:
+        return <DoctorInboxScreen />;
       case Screens.CONSULTATION_DETAIL:
         return <ConsultationDetailScreen />;
       case Screens.PRESCRIPTION_FORM:

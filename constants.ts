@@ -11,6 +11,7 @@ export const Screens = {
   PROFILE: 'PROFILE',
   QR_DISPLAY: 'QR_DISPLAY',
   DOCTOR_DASHBOARD: 'DOCTOR_DASHBOARD',
+  DOCTOR_INBOX: 'DOCTOR_INBOX',
   CONSULTATION_DETAIL: 'CONSULTATION_DETAIL',
   PRESCRIPTION_FORM: 'PRESCRIPTION_FORM',
   PHARMACY_DASHBOARD: 'PHARMACY_DASHBOARD',
@@ -30,15 +31,18 @@ export const CHAT_HISTORY_KEY = 'ebotikaChatHistory';
 export const SESSION_KEY = 'ebotikaSession';
 
 export const MOCK_USERS: User[] = [
-    { id: 'p1', name: 'Juan dela Cruz', email: 'patient@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09123456789', address: '123 Rizal Ave, Manila', avatarUrl: 'https://picsum.photos/id/237/200/200', status: 'active' },
+    { id: 'p1', name: 'Juan dela Cruz', email: 'patient@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09123456789', address: '123 Rizal Ave, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/237/200/200', status: 'active' },
     { 
-        id: 'p2', name: 'Anna Reyes', email: 'anna@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09987654321', address: '456 Bonifacio St, Cebu', avatarUrl: 'https://picsum.photos/id/338/200/200', 
+        id: 'p2', name: 'Anna Reyes', email: 'anna@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09987654321', address: '456 Bonifacio St, Brgy. Mabini, Aklan', avatarUrl: 'https://picsum.photos/id/338/200/200', 
         status: 'banned',
         reports: [
             { doctorId: 'd1', doctorName: 'Dr. Maria Dela Cruz', reason: 'Abusive language during chat consultation.', date: '2024-07-28' }
         ]
     },
-     { id: 'p3', name: 'Pedro Penduko', email: 'pedro@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09178765432', address: '789 Mabini Blvd, Davao', avatarUrl: 'https://picsum.photos/id/433/200/200', status: 'active' },
+    { id: 'p3', name: 'Pedro Penduko', email: 'pedro@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09178765432', address: '789 Mabini Blvd, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/433/200/200', status: 'active' },
+    { id: 'p4', name: 'Carlos Santos', email: 'carlos@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09112223344', address: '111 National Road, Brgy. Aparicio, Aklan', avatarUrl: 'https://picsum.photos/id/111/200/200', status: 'active' },
+    { id: 'p5', name: 'Lina Gomez', email: 'lina@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09223334455', address: '222 Farm Trail, Brgy. Monlaque, Aklan', avatarUrl: 'https://picsum.photos/id/222/200/200', status: 'active' },
+    { id: 'p6', name: 'Ramon Garcia', email: 'ramon@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09334445566', address: '333 Seaside View, Brgy. Colongcolong, Aklan', avatarUrl: 'https://picsum.photos/id/333/200/200', status: 'active' },
     { id: 'd1', name: 'Dr. Maria Dela Cruz', email: 'doctor@ebotika.ph', password: 'password', role: 'doctor', avatarUrl: 'https://picsum.photos/id/1027/200/200', isOnline: true, status: 'active' },
     { id: 'd2', name: 'Dr. Jose Rizal', email: 'doctor2@ebotika.ph', password: 'password', role: 'doctor', avatarUrl: 'https://picsum.photos/id/1005/200/200', isOnline: false, status: 'active' },
     { id: 'd3', name: 'Dr. Gabriela Silang', email: 'doctor3@ebotika.ph', password: 'password', role: 'doctor', avatarUrl: 'https://picsum.photos/id/1011/200/200', isOnline: true, status: 'active' },
@@ -48,9 +52,12 @@ export const MOCK_USERS: User[] = [
 ];
 
 export const MOCK_RESIDENT_RECORDS: ResidentRecord[] = [
-    { id: 'res-1', name: 'Juan dela Cruz', contactNumber: '09123456789', address: '123 Rizal Ave, Manila' },
-    { id: 'res-2', name: 'Anna Reyes', contactNumber: '09987654321', address: '456 Bonifacio St, Cebu' },
-    { id: 'res-3', name: 'Pedro Penduko', contactNumber: '09178765432', address: '789 Mabini Blvd, Davao' },
+    { id: 'res-1', name: 'Juan dela Cruz', contactNumber: '09123456789', address: '123 Rizal Ave, Brgy. Poblacion, Aklan' },
+    { id: 'res-2', name: 'Anna Reyes', contactNumber: '09987654321', address: '456 Bonifacio St, Brgy. Mabini, Aklan' },
+    { id: 'res-3', name: 'Pedro Penduko', contactNumber: '09178765432', address: '789 Mabini Blvd, Brgy. Poblacion, Aklan' },
+    { id: 'res-4', name: 'Carlos Santos', contactNumber: '09112223344', address: '111 National Road, Brgy. Aparicio, Aklan' },
+    { id: 'res-5', name: 'Lina Gomez', contactNumber: '09223334455', address: '222 Farm Trail, Brgy. Monlaque, Aklan' },
+    { id: 'res-6', name: 'Ramon Garcia', contactNumber: '09334445566', address: '333 Seaside View, Brgy. Colongcolong, Aklan' },
 ];
 
 
@@ -168,13 +175,28 @@ export const MOCK_PRIVATE_CHATS: { [key: string]: PrivateChatMessage[] } = {
 };
 
 export const MOCK_PATIENT_DOCTOR_CHATS: { [key: string]: PatientDoctorChatMessage[] } = {
-    '1': [ // Corresponds to Dr. Maria Dela Cruz
-        { id: 'pdc1', sender: 'patient', content: 'doctor_chat_mock_patient_1', timestamp: new Date('2024-08-03T11:00:00').toLocaleString() },
-        { id: 'pdc2', sender: 'doctor', content: 'doctor_chat_mock_doctor_1', timestamp: new Date('2024-08-03T11:01:00').toLocaleString() },
+    'd1-p1': [ // Dr. Maria Dela Cruz & Juan Dela Cruz
+        { id: 'pdc1', sender: 'patient', content: 'doctor_chat_mock_patient_1', timestamp: new Date('2024-08-03T11:00:00').toLocaleString(), readByDoctor: true, readByPatient: true },
+        { id: 'pdc2', sender: 'doctor', content: 'doctor_chat_mock_doctor_1', timestamp: new Date('2024-08-03T11:01:00').toLocaleString(), readByDoctor: true, readByPatient: true },
+        { id: 'pdc_new_1', sender: 'patient', content: 'Thank you, doctor!', timestamp: new Date('2024-08-04T09:00:00').toLocaleString(), readByDoctor: false, readByPatient: true },
     ],
-    '2': [ // Corresponds to Dr. Jose Rizal
-        { id: 'pdc3', sender: 'patient', content: 'doctor_chat_mock_patient_2', timestamp: new Date('2024-08-02T17:30:00').toLocaleString() },
-    ]
+    'd1-p3': [ // Dr. Maria Dela Cruz & Pedro Penduko
+        { id: 'pdc3', sender: 'patient', content: 'doctor_chat_mock_patient_2', timestamp: new Date('2024-08-02T17:30:00').toLocaleString(), readByDoctor: true, readByPatient: true },
+        { id: 'pdc_new_2', sender: 'patient', content: 'I have another question about the fever.', timestamp: new Date('2024-08-05T14:00:00').toLocaleString(), readByDoctor: false, readByPatient: true },
+    ],
+     'd2-p2': [ // Dr. Jose Rizal & Anna Reyes
+        { id: 'pdc4', sender: 'patient', content: 'Good afternoon, Doc.', timestamp: new Date('2024-08-05T15:00:00').toLocaleString(), readByDoctor: true, readByPatient: true },
+    ],
+    'd1-p4': [ // Dr. Maria Dela Cruz & Carlos Santos (Aparicio)
+        { id: 'pdc5', sender: 'patient', content: 'Good morning, Doc. I feel dizzy.', timestamp: new Date('2024-08-06T08:00:00').toLocaleString(), readByDoctor: false, readByPatient: true },
+    ],
+    'd1-p5': [ // Dr. Maria Dela Cruz & Lina Gomez (Monlaque)
+        { id: 'pdc6', sender: 'patient', content: 'Hello po, Doctor. My child has a rash.', timestamp: new Date('2024-08-06T09:30:00').toLocaleString(), readByDoctor: false, readByPatient: true },
+    ],
+    'd1-p6': [ // Dr. Maria Dela Cruz & Ramon Garcia (Colongcolong)
+        { id: 'pdc7', sender: 'patient', content: 'Doc, I need a refill for my maintenance medicine.', timestamp: new Date('2024-08-05T18:00:00').toLocaleString(), readByDoctor: true, readByPatient: true },
+        { id: 'pdc8', sender: 'doctor', content: 'Okay, please book a consultation first so I can issue a new prescription.', timestamp: new Date('2024-08-05T18:05:00').toLocaleString(), readByDoctor: true, readByPatient: true },
+    ],
 };
 
 

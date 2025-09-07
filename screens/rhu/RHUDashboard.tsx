@@ -4,14 +4,20 @@ import { MockChart, StatCard } from '../../components/Dashboard';
 import { Screens } from '../../constants';
 import { useTranslation } from '../../hooks/useTranslation';
 import type { User } from '../../types';
-import { ChevronDownIcon } from '../../components/Icons';
+import { ChevronDownIcon, TrashIcon } from '../../components/Icons';
 
-const AddUserModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+type AddUserModalProps = {
+    onClose: () => void;
+    titleKey: string;
+    allowedRoles: Array<{ value: 'doctor' | 'pharmacy' | 'bhw'; labelKey: string }>;
+};
+
+const AddUserModal: React.FC<AddUserModalProps> = ({ onClose, titleKey, allowedRoles }) => {
     const { addProfessionalUser, t } = useAppContext();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState<'doctor' | 'pharmacy'>('doctor');
+    const [role, setRole] = useState(allowedRoles[0].value);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -33,7 +39,7 @@ const AddUserModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     return (
         <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
             <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
-                <h2 className="text-xl font-bold mb-4 text-gray-800">{t('rhu_modal_title')}</h2>
+                <h2 className="text-xl font-bold mb-4 text-gray-800">{t(titleKey)}</h2>
                 <form onSubmit={handleSubmit} className="space-y-3">
                     <div>
                         <label htmlFor="name" className="block text-xs font-medium text-gray-700">{t('register_fullname_label')}</label>
@@ -47,13 +53,18 @@ const AddUserModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         <label htmlFor="password" className="block text-xs font-medium text-gray-700">{t('login_password_label')}</label>
                         <input type="password" id="password" value={password} onChange={e => setPassword(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 text-sm" required />
                     </div>
-                    <div>
-                        <label htmlFor="role" className="block text-xs font-medium text-gray-700">{t('rhu_modal_role_label')}</label>
-                        <select id="role" value={role} onChange={e => setRole(e.target.value as 'doctor' | 'pharmacy')} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 text-sm">
-                            <option value="doctor">{t('rhu_modal_role_doctor')}</option>
-                            <option value="pharmacy">{t('rhu_modal_role_pharmacy')}</option>
-                        </select>
-                    </div>
+                    {allowedRoles.length > 1 ? (
+                        <div>
+                            <label htmlFor="role" className="block text-xs font-medium text-gray-700">{t('rhu_modal_role_label')}</label>
+                            <select id="role" value={role} onChange={e => setRole(e.target.value as 'doctor' | 'pharmacy' | 'bhw')} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 text-sm">
+                                {allowedRoles.map(r => (
+                                    <option key={r.value} value={r.value}>{t(r.labelKey)}</option>
+                                ))}
+                            </select>
+                        </div>
+                    ) : (
+                         <input type="hidden" value={role} />
+                    )}
                     <div className="flex justify-end space-x-2 pt-2">
                         <button type="button" onClick={onClose} className="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300">{t('guest_modal_cancel')}</button>
                         <button type="submit" className="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-teal-600">{t('rhu_modal_create_button')}</button>
@@ -63,6 +74,7 @@ const AddUserModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </div>
     );
 };
+
 
 const PatientCard: React.FC<{ patient: User }> = ({ patient }) => {
     const { navigateTo, setActivePatientForManagement, t } = useAppContext();
@@ -93,13 +105,59 @@ const PatientCard: React.FC<{ patient: User }> = ({ patient }) => {
     );
 };
 
+const ProfessionalUserCard: React.FC<{ user: User; onDelete?: () => void }> = ({ user, onDelete }) => (
+    <div className="bg-gray-50 p-2 rounded-md flex justify-between items-center text-sm">
+        <div>
+            <p className="font-semibold text-gray-800">{user.name}</p>
+            <p className="text-gray-500">{user.email}</p>
+        </div>
+        {onDelete && (
+            <button
+                onClick={onDelete}
+                className="p-2 text-red-500 hover:bg-red-100 rounded-full transition-colors"
+                aria-label={`Delete user ${user.name}`}
+            >
+                <TrashIcon />
+            </button>
+        )}
+    </div>
+);
+
+const ConfirmationModal: React.FC<{
+    title: string;
+    text: string;
+    onConfirm: () => void;
+    onClose: () => void;
+}> = ({ title, text, onConfirm, onClose }) => {
+    const { t } = useTranslation();
+    return (
+        <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+                <h2 className="text-xl font-bold mb-2 text-gray-800">{title}</h2>
+                <p className="text-sm text-gray-600 mb-6">{text}</p>
+                <div className="flex justify-end space-x-2">
+                    <button onClick={onClose} className="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300">
+                        {t('cancel')}
+                    </button>
+                    <button onClick={onConfirm} className="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700">
+                        {t('confirm')}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 
 const RHUDashboard: React.FC = () => {
-    const { user, logout, navigateTo, t, users, consultations, prescriptions } = useAppContext();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { user, logout, navigateTo, t, users, consultations, prescriptions, deleteUser } = useAppContext();
+    const [isAddDoctorModalOpen, setIsAddDoctorModalOpen] = useState(false);
+    const [isAddPharmacyModalOpen, setIsAddPharmacyModalOpen] = useState(false);
+    const [isAddBhwModalOpen, setIsAddBhwModalOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [isManagementVisible, setIsManagementVisible] = useState(false);
+    const [userToDelete, setUserToDelete] = useState<User | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const weeklyConsultationsData = [
@@ -112,7 +170,10 @@ const RHUDashboard: React.FC = () => {
         {name: 'Sun', uv: 4},
     ];
     const urgencyData = [{name: 'Urgent', count: 25}, {name: 'Non-Urgent', count: 75}];
-    const professionalUsers = users.filter(u => u.role === 'doctor' || u.role === 'pharmacy');
+    
+    const doctors = users.filter(u => u.role === 'doctor');
+    const bhws = users.filter(u => u.role === 'bhw');
+    const pharmacists = users.filter(u => u.role === 'pharmacy');
     const patientUsers = users.filter(u => u.role === 'patient');
 
     useEffect(() => {
@@ -126,6 +187,13 @@ const RHUDashboard: React.FC = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const handleConfirmDelete = () => {
+        if (userToDelete) {
+            deleteUser(userToDelete.id);
+            setUserToDelete(null);
+        }
+    };
 
     const handleExport = () => {
         setIsExporting(true);
@@ -193,7 +261,35 @@ const RHUDashboard: React.FC = () => {
 
     return (
         <div className="relative flex flex-col h-full">
-            {isModalOpen && <AddUserModal onClose={() => setIsModalOpen(false)} />}
+            {isAddDoctorModalOpen && (
+                <AddUserModal 
+                    onClose={() => setIsAddDoctorModalOpen(false)}
+                    titleKey="rhu_modal_doctor_title"
+                    allowedRoles={[{ value: 'doctor', labelKey: 'rhu_modal_role_doctor' }]}
+                />
+            )}
+             {isAddPharmacyModalOpen && (
+                <AddUserModal 
+                    onClose={() => setIsAddPharmacyModalOpen(false)}
+                    titleKey="rhu_modal_pharmacy_title"
+                    allowedRoles={[{ value: 'pharmacy', labelKey: 'rhu_modal_role_pharmacy' }]}
+                />
+            )}
+            {isAddBhwModalOpen && (
+                <AddUserModal 
+                    onClose={() => setIsAddBhwModalOpen(false)}
+                    titleKey="rhu_modal_bhw_title"
+                    allowedRoles={[{ value: 'bhw', labelKey: 'rhu_modal_role_bhw' }]}
+                />
+            )}
+            {userToDelete && (
+                <ConfirmationModal 
+                    title={t('rhu_delete_user_confirm_title')}
+                    text={t('rhu_delete_user_confirm_text', { name: userToDelete.name })}
+                    onConfirm={handleConfirmDelete}
+                    onClose={() => setUserToDelete(null)}
+                />
+            )}
             <header className="bg-white p-4 shadow-md z-10">
                  <div className="flex justify-between items-center">
                     <div className="relative" ref={dropdownRef}>
@@ -256,29 +352,44 @@ const RHUDashboard: React.FC = () => {
                 </div>
             </header>
             <main className="flex-1 overflow-y-auto bg-gray-50 p-4 space-y-4 custom-scrollbar">
-                 <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isManagementVisible ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                 <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isManagementVisible ? 'max-h-[1500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                     <div className="space-y-4 pb-4">
                         <div className="bg-white p-4 rounded-lg shadow">
-                            <h2 className="font-bold text-lg text-gray-800 mb-2">{t('rhu_user_management_title')}</h2>
+                             <h2 className="font-bold text-lg text-gray-800 mb-2">{t('rhu_doctor_management_title')} ({doctors.length})</h2>
                             <button 
-                                onClick={() => setIsModalOpen(true)}
+                                onClick={() => setIsAddDoctorModalOpen(true)}
                                 className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-blue-600 transition mb-3"
                             >
-                                {t('rhu_add_user_button')}
+                                {t('rhu_add_doctor_button')}
                             </button>
-                            <h3 className="font-semibold text-gray-700 text-sm mb-2">{t('rhu_user_list_title')} ({professionalUsers.length})</h3>
-                            <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                                {professionalUsers.map(prof => (
-                                    <div key={prof.id} className="bg-gray-50 p-2 rounded-md flex justify-between items-center text-sm">
-                                        <div>
-                                            <p className="font-semibold text-gray-800">{prof.name}</p>
-                                            <p className="text-gray-500">{prof.email}</p>
-                                        </div>
-                                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${prof.role === 'doctor' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}>
-                                            {prof.role}
-                                        </span>
-                                    </div>
-                                ))}
+                            <div className="space-y-2 max-h-32 overflow-y-auto custom-scrollbar pr-1">
+                                {doctors.map(doc => <ProfessionalUserCard key={doc.id} user={doc} onDelete={() => setUserToDelete(doc)} />)}
+                            </div>
+                        </div>
+
+                         <div className="bg-white p-4 rounded-lg shadow">
+                             <h2 className="font-bold text-lg text-gray-800 mb-2">{t('rhu_pharmacy_management_section_title')} ({pharmacists.length})</h2>
+                            <button 
+                                onClick={() => setIsAddPharmacyModalOpen(true)}
+                                className="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-green-600 transition mb-3"
+                            >
+                                {t('rhu_add_pharmacy_button')}
+                            </button>
+                            <div className="space-y-2 max-h-32 overflow-y-auto custom-scrollbar pr-1">
+                                 {pharmacists.map(ph => <ProfessionalUserCard key={ph.id} user={ph} onDelete={() => setUserToDelete(ph)} />)}
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-4 rounded-lg shadow">
+                             <h2 className="font-bold text-lg text-gray-800 mb-2">{t('rhu_bhw_management_section_title')} ({bhws.length})</h2>
+                             <button 
+                                onClick={() => setIsAddBhwModalOpen(true)}
+                                className="w-full bg-orange-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-orange-600 transition mb-3"
+                            >
+                                {t('rhu_add_bhw_button')}
+                            </button>
+                             <div className="space-y-2 max-h-32 overflow-y-auto custom-scrollbar pr-1">
+                                {bhws.map(bhw => <ProfessionalUserCard key={bhw.id} user={bhw} onDelete={() => setUserToDelete(bhw)} />)}
                             </div>
                         </div>
 

@@ -42,6 +42,8 @@ export interface PatientDoctorChatMessage {
     sender: 'patient' | 'doctor';
     content: string;
     timestamp: string;
+    readByPatient: boolean;
+    readByDoctor: boolean;
 }
 
 export interface IAppContext {
@@ -66,6 +68,7 @@ export interface IAppContext {
   updateUserProfile: (updatedUser: Partial<User>) => void;
   addProfessionalUser: (user: Omit<User, 'id' | 'status'>) => void;
   addResidentRecord: (details: Omit<ResidentRecord, 'id'>) => void;
+  deleteResidentRecord: (recordId: string) => void;
   residentRecords: ResidentRecord[];
   updateUserStatus: (userId: string, status: 'active' | 'banned') => void;
   deleteUser: (userId: string) => void;
@@ -90,8 +93,10 @@ export interface IAppContext {
   sendPrivateMessage: (recipientId: string, content: string) => void;
   activeDoctorChatRecipient: DoctorProfile | null;
   setActiveDoctorChatRecipient: (doctor: DoctorProfile | null) => void;
-  patientDoctorChats: { [doctorId: string]: PatientDoctorChatMessage[] };
+  patientDoctorChats: { [conversationId: string]: PatientDoctorChatMessage[] };
   sendPatientDoctorMessage: (doctorId: string, content: string) => void;
+  sendDoctorPatientMessage: (patientId: string, content: string) => void;
+  markDoctorChatAsRead: (conversationId: string) => void;
   doctorProfiles: DoctorProfile[];
   updateDoctorAvailability: (doctorId: string, availability: 'Available' | 'On Leave') => void;
 }

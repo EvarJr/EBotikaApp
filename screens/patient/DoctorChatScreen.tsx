@@ -8,6 +8,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 const ChatBubble: React.FC<{ message: PatientDoctorChatMessage }> = ({ message }) => {
   const { t } = useTranslation();
   const isPatient = message.sender === 'patient';
+  const messageContent = message.content.startsWith('doctor_chat_mock') ? t(message.content) : message.content;
   return (
     <div className={`flex ${isPatient ? 'justify-end' : 'justify-start'}`}>
       <div
@@ -17,7 +18,7 @@ const ChatBubble: React.FC<{ message: PatientDoctorChatMessage }> = ({ message }
             : 'bg-gray-200 text-gray-800 rounded-bl-none'
         }`}
       >
-        <p className="whitespace-pre-wrap">{t(message.content)}</p>
+        <p className="whitespace-pre-wrap">{messageContent}</p>
         <p className={`text-xs mt-1 ${isPatient ? 'text-blue-100' : 'text-gray-500'} text-right`}>
             {message.timestamp.substring(message.timestamp.indexOf(',') + 2)}
         </p>
@@ -29,6 +30,7 @@ const ChatBubble: React.FC<{ message: PatientDoctorChatMessage }> = ({ message }
 
 const DoctorChatScreen: React.FC = () => {
     const { 
+        user,
         navigateTo, 
         activeDoctorChatRecipient, 
         patientDoctorChats, 
@@ -39,11 +41,13 @@ const DoctorChatScreen: React.FC = () => {
     const [newMessage, setNewMessage] = useState('');
     const chatEndRef = useRef<HTMLDivElement>(null);
 
+    const conversationId = user && activeDoctorChatRecipient ? [user.id, activeDoctorChatRecipient.userId].sort().join('-') : null;
+
     const scrollToBottom = () => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
     
-    const messages = activeDoctorChatRecipient ? patientDoctorChats[activeDoctorChatRecipient.id] || [] : [];
+    const messages = conversationId ? patientDoctorChats[conversationId] || [] : [];
     
     useEffect(scrollToBottom, [messages]);
     
@@ -54,7 +58,7 @@ const DoctorChatScreen: React.FC = () => {
     
     const handleSend = () => {
         if (!newMessage.trim() || !activeDoctorChatRecipient) return;
-        sendPatientDoctorMessage(activeDoctorChatRecipient.id, newMessage);
+        sendPatientDoctorMessage(activeDoctorChatRecipient.userId, newMessage);
         setNewMessage('');
     };
     

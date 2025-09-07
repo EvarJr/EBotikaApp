@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useAppContext } from '../../hooks/useAppContext';
 import { Screens } from '../../constants';
 import type { Consultation } from '../../types';
@@ -65,7 +65,7 @@ const CompletedConsultationCard: React.FC<{ consultation: Consultation }> = ({ c
 }
 
 const DoctorDashboard: React.FC = () => {
-    const { user, logout, navigateTo, doctorProfiles, updateDoctorAvailability, consultations } = useAppContext();
+    const { user, logout, navigateTo, doctorProfiles, updateDoctorAvailability, consultations, patientDoctorChats } = useAppContext();
     const { t } = useTranslation();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<'queue' | 'history'>('queue');
@@ -76,6 +76,13 @@ const DoctorDashboard: React.FC = () => {
     
     const doctorProfile = doctorProfiles.find(d => d.userId === user?.id);
     const isAvailable = doctorProfile?.availability === 'Available';
+
+    const unreadMessagesCount = useMemo(() => {
+        if (!user) return 0;
+        return Object.values(patientDoctorChats)
+            .flat()
+            .filter(msg => msg.sender === 'patient' && !msg.readByDoctor).length;
+    }, [patientDoctorChats, user]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -228,15 +235,20 @@ const DoctorDashboard: React.FC = () => {
                 <div className="p-4">
                     {renderContent()}
                 </div>
-                 <h2 className="text-xl font-bold text-gray-800 mb-3 mt-2 px-4">Patient Messages</h2>
+                 <h2 className="text-xl font-bold text-gray-800 mb-3 mt-2 px-4">{t('doctor_dashboard_messages_title')}</h2>
                 <div className="bg-white p-4 rounded-lg shadow text-center mx-4 mb-4">
                     <p className="font-semibold text-gray-700">New messages from patients</p>
-                    <p className="text-sm text-gray-500 mt-1">You have unread messages in your patient chat inbox.</p>
+                    <p className="text-sm text-gray-500 mt-1">{t('doctor_dashboard_messages_prompt')}</p>
                     <button 
-                      onClick={() => alert("Feature to view patient messages coming soon!")}
-                      className="mt-3 bg-gray-200 text-gray-700 px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-gray-300 transition"
+                      onClick={() => navigateTo(Screens.DOCTOR_INBOX)}
+                      className="relative mt-3 bg-gray-200 text-gray-700 px-4 py-1.5 rounded-md text-sm font-semibold hover:bg-gray-300 transition"
                     >
-                      View Messages
+                      {t('doctor_dashboard_messages_button')}
+                      {unreadMessagesCount > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                            {unreadMessagesCount}
+                        </span>
+                      )}
                     </button>
                 </div>
             </main>
