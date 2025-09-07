@@ -157,8 +157,14 @@ const DoctorInboxScreen: React.FC = () => {
         }
     }, [activeConversation, markDoctorChatAsRead]);
 
-    if (activeConversation) {
-        return <ChatWindow conversation={activeConversation} onBack={() => setActiveConversation(null)} />;
+    // When the component re-renders (e.g., after sending a message),
+    // find the latest version of the active conversation from the re-calculated list.
+    const currentActiveConvoData = activeConversation
+        ? conversations.find(c => c.convoId === activeConversation.convoId)
+        : null;
+
+    if (currentActiveConvoData) {
+        return <ChatWindow conversation={currentActiveConvoData} onBack={() => setActiveConversation(null)} />;
     }
 
     return (
