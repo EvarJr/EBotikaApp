@@ -90,7 +90,7 @@ const GuestDetailsModal: React.FC<{ onClose: () => void; onSubmit: (details: { n
 };
 
 const SymptomCheckScreen: React.FC = () => {
-    const { navigateTo, symptom, user, role, updateGuestDetails, addConsultation, addPrescription, language, residentRecords } = useAppContext();
+    const { navigateTo, symptom, user, role, updateGuestDetails, addConsultation, addPrescription, language, residentRecords, useConsultationCredit } = useAppContext();
     const { t } = useTranslation();
     const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
     
@@ -158,7 +158,21 @@ const SymptomCheckScreen: React.FC = () => {
     const handleSendToDoctor = () => {
         if (role === 'guest') {
             setIsGuestModalOpen(true);
-        } else if (user) {
+            return;
+        }
+
+        if (user) {
+            if (!user.isPremium) {
+                alert(t('upgrade_for_consultation_alert_non_premium'));
+                return;
+            }
+            if (user.isPremium && (user.monthlyConsultationCredits || 0) <= 0) {
+                alert(t('upgrade_for_consultation_alert_no_credits'));
+                return;
+            }
+
+            // If premium and has credits, proceed
+            useConsultationCredit(user.id);
             createAndSubmitConsultation(user);
         }
     };
@@ -172,10 +186,14 @@ const SymptomCheckScreen: React.FC = () => {
             alert(t('guest_not_verified_error'));
             return;
         }
-
+        
+        // For guests, upgrading is the only path to consult a doctor.
+        // This UX can be improved later, but for now, we alert them.
+        alert(t('upgrade_for_consultation_alert_non_premium'));
         const newPatientUser = updateGuestDetails(details);
         setIsGuestModalOpen(false);
-        createAndSubmitConsultation(newPatientUser);
+        // We don't submit the consultation, just save their details and let them upgrade from profile.
+        navigateTo(Screens.PROFILE);
     };
 
     const handleSend = async (prefilledSymptom?: string) => {

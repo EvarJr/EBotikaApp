@@ -97,7 +97,7 @@ const ConversationListItem: React.FC<{ convo: Conversation; onClick: () => void 
 
 const BarangayAccordion: React.FC<{ barangay: string; convos: Conversation[]; onSelect: (convo: Conversation) => void; }> = ({ barangay, convos, onSelect }) => {
     const { t } = useTranslation();
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const totalUnread = convos.reduce((sum, c) => sum + c.unreadCount, 0);
 
     return (

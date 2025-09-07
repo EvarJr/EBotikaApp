@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PatientLayout } from '../../components/Layout';
 import { useAppContext } from '../../hooks/useAppContext';
-import { LogoutIcon, EditIcon, PhoneIcon, MapPinIcon } from '../../components/Icons';
+import { LogoutIcon, EditIcon, PhoneIcon, MapPinIcon, UserIcon, UsersIcon, CheckIcon } from '../../components/Icons';
 import { Screens, MOCK_AVATARS } from '../../constants';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -122,52 +122,68 @@ const AvatarSelectionModal: React.FC<{ onSelect: (url: string) => void; onClose:
     </div>
 );
 
-const PaymentModal: React.FC<{ onClose: () => void; onPaymentSuccess: () => void; }> = ({ onClose, onPaymentSuccess }) => {
+const PaymentModal: React.FC<{
+    onClose: () => void;
+    onPaymentSuccess: (plan: 'individual' | 'family') => void;
+    plan: 'individual' | 'family';
+    price: number;
+}> = ({ onClose, onPaymentSuccess, plan, price }) => {
     const { t } = useTranslation();
     const [isProcessing, setIsProcessing] = useState(false);
+    const [gcashNumber, setGcashNumber] = useState('');
 
     const handlePayment = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!/^(09)\d{9}$/.test(gcashNumber)) {
+            alert('Please enter a valid 11-digit mobile number starting with 09.');
+            return;
+        }
         setIsProcessing(true);
         // Simulate API call
         setTimeout(() => {
             setIsProcessing(false);
             alert(t('payment_success_alert'));
-            onPaymentSuccess();
+            onPaymentSuccess(plan);
             onClose();
         }, 2000);
     };
+    
+    const GcashLogo = () => (
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" fill="#0070FF"/>
+            <path d="M12 17.5C9.51472 17.5 7.5 15.4853 7.5 13V11C7.5 8.51472 9.51472 6.5 12 6.5C14.4853 6.5 16.5 8.51472 16.5 11V11.5" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+            <path d="M14.5 13.5L12 11.5L9.5 13.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    );
 
     return (
         <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4" onClick={onClose}>
             <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
-                <h2 className="text-xl font-bold text-gray-800">{t('payment_modal_title')}</h2>
-                <p className="text-sm text-gray-600 mt-1">{t('payment_modal_description')}</p>
-                <div className="my-4 p-3 bg-teal-50 rounded-lg text-center">
-                    <p className="font-semibold text-teal-700">{t('payment_modal_price')}</p>
+                <div className="flex justify-center mb-2">
+                    <GcashLogo />
+                </div>
+                <h2 className="text-xl font-bold text-gray-800 text-center">{t('payment_modal_title')}</h2>
+                <p className="text-sm text-gray-600 mt-1 text-center capitalize">{plan} Plan</p>
+                <div className="my-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded-lg text-center">
+                    <p className="font-semibold text-blue-800">{t('payment_modal_price', { price })}</p>
                 </div>
                 <form onSubmit={handlePayment} className="space-y-3">
                     <div>
-                        <label htmlFor="cardName" className="block text-xs font-medium text-gray-700">{t('payment_modal_cardholder_label')}</label>
-                        <input type="text" id="cardName" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required />
+                        <label htmlFor="gcashNumber" className="block text-xs font-medium text-gray-700">{t('payment_modal_gcash_number_label')}</label>
+                        <input 
+                            type="tel" 
+                            id="gcashNumber" 
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" 
+                            required 
+                            placeholder="09XXXXXXXXX"
+                            value={gcashNumber}
+                            onChange={(e) => setGcashNumber(e.target.value)}
+                        />
                     </div>
-                    <div>
-                        <label htmlFor="cardNumber" className="block text-xs font-medium text-gray-700">{t('payment_modal_card_number_label')}</label>
-                        <input type="text" id="cardNumber" placeholder="•••• •••• •••• ••••" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label htmlFor="expiry" className="block text-xs font-medium text-gray-700">{t('payment_modal_expiry_label')}</label>
-                            <input type="text" id="expiry" placeholder="MM/YY" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required />
-                        </div>
-                        <div>
-                            <label htmlFor="cvc" className="block text-xs font-medium text-gray-700">{t('payment_modal_cvc_label')}</label>
-                            <input type="text" id="cvc" placeholder="•••" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required />
-                        </div>
-                    </div>
+                    
                     <div className="pt-2">
-                        <button type="submit" disabled={isProcessing} className="w-full bg-teal-500 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-teal-600 disabled:bg-teal-300">
-                            {isProcessing ? t('payment_modal_processing_button') : t('payment_modal_pay_button')}
+                        <button type="submit" disabled={isProcessing} className="w-full bg-blue-600 text-white font-bold py-2.5 px-4 rounded-lg hover:bg-blue-700 disabled:bg-blue-300">
+                            {isProcessing ? t('payment_modal_processing_button') : t('payment_modal_pay_button_gcash', { price })}
                         </button>
                     </div>
                 </form>
@@ -178,15 +194,17 @@ const PaymentModal: React.FC<{ onClose: () => void; onPaymentSuccess: () => void
 
 
 const UserProfileView: React.FC = () => {
-    const { logout, user, language, setLanguage, updateUserProfile, upgradeUserToPremium } = useAppContext();
+    const { logout, user, users, language, setLanguage, updateUserProfile, upgradeUserSubscription } = useAppContext();
     const { t } = useTranslation();
     
     const [isEditing, setIsEditing] = useState(false);
     const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [paymentPlan, setPaymentPlan] = useState<'individual' | 'family' | null>(null);
     const [editableUser, setEditableUser] = useState(user!);
 
     if (!user) return null;
+    
+    const familyMembers = user.familyId ? users.filter(u => u.familyId === user.familyId && u.id !== user.id) : [];
 
     const handleEdit = () => {
         setEditableUser(user);
@@ -212,9 +230,57 @@ const UserProfileView: React.FC = () => {
         setIsAvatarModalOpen(false);
     };
     
-    const handleUpgradeSuccess = () => {
-        upgradeUserToPremium(user.id);
+    const handleUpgradeSuccess = (plan: 'individual' | 'family') => {
+        upgradeUserSubscription(user.id, plan);
     };
+
+    const handleUpgradeClick = (plan: 'individual' | 'family') => {
+        setPaymentPlan(plan);
+    };
+
+    const SubscriptionPlanCard: React.FC<{
+        plan: 'individual' | 'family';
+        price: number;
+        titleKey: string;
+        featureKeys: string[];
+        icon: React.ReactNode;
+        isRecommended?: boolean;
+    }> = ({ plan, price, titleKey, featureKeys, icon, isRecommended = false }) => (
+        <div className={`relative border-2 rounded-xl p-5 flex flex-col ${isRecommended ? 'border-teal-500 bg-teal-50/50' : 'border-gray-200 bg-white'}`}>
+            {isRecommended && (
+                <div className="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    {t('best_value_banner')}
+                </div>
+            )}
+            <div className="flex items-center">
+                <div className={`p-2 rounded-lg ${isRecommended ? 'bg-teal-100 text-teal-600' : 'bg-gray-100 text-gray-600'}`}>
+                    {icon}
+                </div>
+                <h4 className="font-bold text-lg text-gray-800 ml-3">{t(titleKey)}</h4>
+            </div>
+
+            <p className="font-extrabold text-4xl text-gray-800 my-4 text-center">
+                ₱{price}<span className="text-base font-medium text-gray-500">/mo</span>
+            </p>
+
+            <ul className="space-y-2 text-sm text-gray-600 flex-grow mb-5">
+                {featureKeys.map((key) => (
+                    <li key={key} className="flex items-center">
+                        <CheckIcon />
+                        <span>{t(key)}</span>
+                    </li>
+                ))}
+            </ul>
+
+            <button 
+                onClick={() => handleUpgradeClick(plan)} 
+                className={`mt-auto w-full font-bold py-3 px-4 rounded-lg transition ${isRecommended ? 'bg-teal-500 text-white hover:bg-teal-600 shadow-md' : 'bg-white text-teal-500 border-2 border-teal-500 hover:bg-teal-50'}`}
+            >
+                {t('profile_upgrade_button')}
+            </button>
+        </div>
+    );
+
 
     const ToggleSwitch = () => (
         <label htmlFor="toggle" className="flex items-center cursor-pointer">
@@ -231,7 +297,14 @@ const UserProfileView: React.FC = () => {
     return (
         <div className="space-y-6">
             {isAvatarModalOpen && <AvatarSelectionModal onSelect={handleAvatarSelect} onClose={() => setIsAvatarModalOpen(false)} />}
-            {isPaymentModalOpen && <PaymentModal onClose={() => setIsPaymentModalOpen(false)} onPaymentSuccess={handleUpgradeSuccess} />}
+            {paymentPlan && (
+                <PaymentModal 
+                    onClose={() => setPaymentPlan(null)} 
+                    onPaymentSuccess={handleUpgradeSuccess}
+                    plan={paymentPlan}
+                    price={paymentPlan === 'individual' ? 49 : 199}
+                />
+            )}
             <div className="bg-white p-6 rounded-lg shadow text-center">
                 <div className="relative w-24 h-24 mx-auto">
                     {currentUserForDisplay.avatarUrl ? (
@@ -277,20 +350,65 @@ const UserProfileView: React.FC = () => {
                     </>
                 )}
                  {user.isPremium && (
-                    <div className="mt-2 inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-bold px-2.5 py-1 rounded-full">
+                    <div className="mt-2 inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-bold px-2.5 py-1 rounded-full capitalize">
                         <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        {t('profile_premium_badge')}
+                        {user.subscriptionType} Plan
                     </div>
                 )}
             </div>
 
+            {user.isPremium && (
+                <div className="bg-white p-4 rounded-lg shadow text-center">
+                    <div className="text-center bg-teal-50 border border-teal-200 text-teal-800 text-sm font-semibold px-2.5 py-2 rounded-lg">
+                        <p>{t('profile_consultation_credits', { count: user.monthlyConsultationCredits || 0 })}</p>
+                    </div>
+                </div>
+            )}
+            
+             {user.subscriptionType === 'family' && (
+                <div className="bg-white p-4 rounded-lg shadow">
+                    <h3 className="font-bold text-lg text-gray-800">{t('family_management_title')}</h3>
+                    <p className="text-sm text-gray-500 mb-3">{t('family_members_list')}:</p>
+                    <div className="space-y-2">
+                        {familyMembers.length > 0 ? familyMembers.map(member => (
+                            <div key={member.id} className="bg-gray-50 p-2 rounded-md flex items-center space-x-2">
+                                <img src={member.avatarUrl} alt={member.name} className="w-8 h-8 rounded-full object-cover"/>
+                                <span className="text-gray-700 font-medium">{member.name}</span>
+                            </div>
+                        )) : (
+                            <p className="text-sm text-gray-500 text-center">No other members in your family plan yet.</p>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {!user.isPremium && (
-                 <div className="bg-white p-4 rounded-lg shadow text-center">
-                    <h3 className="font-bold text-lg text-gray-800">{t('profile_upgrade_prompt_title')}</h3>
-                    <p className="text-sm text-gray-600 mt-1">{t('profile_upgrade_prompt_text')}</p>
-                    <button onClick={() => setIsPaymentModalOpen(true)} className="mt-3 bg-yellow-400 text-yellow-900 font-bold py-2 px-4 rounded-lg hover:bg-yellow-500 transition">
-                        {t('profile_upgrade_button')}
-                    </button>
+                 <div className="bg-white p-4 rounded-lg shadow">
+                    <h3 className="font-bold text-lg text-gray-800 text-center">{t('profile_upgrade_prompt_title')}</h3>
+                    <div className="mt-4 grid grid-cols-1 gap-6">
+                        <SubscriptionPlanCard 
+                            plan="individual"
+                            price={49}
+                            titleKey="individual_plan_title"
+                            icon={<UserIcon />}
+                            featureKeys={[
+                                'individual_plan_feature_1',
+                                'individual_plan_feature_2'
+                            ]}
+                        />
+                        <SubscriptionPlanCard 
+                            plan="family"
+                            price={199}
+                            titleKey="family_plan_title"
+                            icon={<UsersIcon />}
+                            featureKeys={[
+                                'family_plan_feature_1',
+                                'family_plan_feature_2',
+                                'family_plan_feature_3',
+                            ]}
+                            isRecommended={true}
+                        />
+                    </div>
                 </div>
             )}
 

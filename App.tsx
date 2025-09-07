@@ -377,27 +377,24 @@ export default function App() {
     if (!user || user.role !== 'patient') return;
 
     const conversationId = [user.id, doctorId].sort().join('-');
+    const chatStartTime = chatAccess[conversationId];
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000;
+    const oneWeek = 7 * oneDay;
 
-    if (!user.isPremium) {
-        const chatStartTime = chatAccess[conversationId];
-        const now = Date.now();
-        const oneDay = 24 * 60 * 60 * 1000;
-        const oneWeek = 7 * oneDay;
-
-        if (!chatStartTime) {
-            // First message of a new cycle, start the timer
+    if (!chatStartTime) {
+        // First message of a new cycle, start the timer
+        setChatAccess(prev => ({ ...prev, [conversationId]: now }));
+    } else {
+        const elapsed = now - chatStartTime;
+        if (elapsed > oneDay && elapsed < oneWeek) {
+            // Locked out
+            return; 
+        } else if (elapsed >= oneWeek) {
+            // Cooldown is over, reset the timer
             setChatAccess(prev => ({ ...prev, [conversationId]: now }));
-        } else {
-            const elapsed = now - chatStartTime;
-            if (elapsed > oneDay && elapsed < oneWeek) {
-                // Locked out
-                return; 
-            } else if (elapsed >= oneWeek) {
-                // Cooldown is over, reset the timer
-                setChatAccess(prev => ({ ...prev, [conversationId]: now }));
-            }
-            // Otherwise, user is within the 24-hour window, so we allow the message
         }
+        // Otherwise, user is within the 24-hour window, so we allow the message
     }
 
     const newMessage: PatientDoctorChatMessage = {
@@ -455,13 +452,21 @@ export default function App() {
     ));
   }, []);
 
-  const upgradeUserToPremium = useCallback((userId: string) => {
-    setUsers(prevUsers => prevUsers.map(u => 
-        u.id === userId ? { ...u, isPremium: true } : u
-    ));
+  const upgradeUserSubscription = useCallback((userId: string, plan: 'individual' | 'family') => {
+    const credits = plan === 'individual' ? 2 : 2; // Can be adjusted for family plan later
+    const familyId = plan === 'family' ? `fam-${userId}` : null;
+
+    setUsers(prevUsers => prevUsers.map(u => {
+        if (u.id === userId) {
+            return { ...u, isPremium: true, subscriptionType: plan, monthlyConsultationCredits: credits, familyId };
+        }
+        // Future logic: if u.familyId matches new familyId, update them too.
+        return u;
+    }));
+
     setUser(prevUser => {
         if (prevUser && prevUser.id === userId) {
-            const upgradedUser = { ...prevUser, isPremium: true };
+            const upgradedUser = { ...prevUser, isPremium: true, subscriptionType: plan, monthlyConsultationCredits: credits, familyId };
             try {
                 const currentSession = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
                 const newSession = { ...currentSession, user: upgradedUser };
@@ -473,6 +478,29 @@ export default function App() {
         }
         return prevUser;
     });
+  }, []);
+
+  const useConsultationCredit = useCallback((userId: string) => {
+    setUser(prevUser => {
+        if (prevUser && prevUser.id === userId && prevUser.monthlyConsultationCredits && prevUser.monthlyConsultationCredits > 0) {
+            const updatedUser = { ...prevUser, monthlyConsultationCredits: prevUser.monthlyConsultationCredits - 1 };
+             // Update session storage immediately
+            try {
+                const currentSession = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+                const newSession = { ...currentSession, user: updatedUser };
+                localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
+            } catch (e) {
+                console.error("Could not save updated session to localStorage", e);
+            }
+            return updatedUser;
+        }
+        return prevUser;
+    });
+    setUsers(prevUsers => prevUsers.map(u => 
+        u.id === userId && u.monthlyConsultationCredits && u.monthlyConsultationCredits > 0
+        ? { ...u, monthlyConsultationCredits: u.monthlyConsultationCredits - 1 } 
+        : u
+    ));
   }, []);
 
   const value = useMemo(() => ({
@@ -529,8 +557,9 @@ export default function App() {
     doctorProfiles,
     updateDoctorAvailability,
     chatAccess,
-    upgradeUserToPremium,
-  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, residentRecords, addResidentRecord, deleteResidentRecord, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, sendDoctorPatientMessage, markDoctorChatAsRead, doctorProfiles, updateDoctorAvailability, chatAccess, upgradeUserToPremium]);
+    upgradeUserSubscription,
+    useConsultationCredit,
+  }), [role, user, users, screen, activePatientScreen, language, t, isGuestUpgrading, setIsGuestUpgrading, login, loginAsGuest, logout, promptGuestExit, navigateTo, setLanguage, startSymptomCheck, symptom, updateGuestDetails, updateUserProfile, updateUserStatus, deleteUser, addReportToUser, addProfessionalUser, residentRecords, addResidentRecord, deleteResidentRecord, consultations, addConsultation, updateConsultationStatus, prescriptions, addPrescription, updatePrescription, activeConsultation, setActiveConsultation, activePrescription, setActivePrescription, activePatientForManagement, forumPosts, addForumPost, activePrivateChatRecipient, privateChats, sendPrivateMessage, activeDoctorChatRecipient, patientDoctorChats, sendPatientDoctorMessage, sendDoctorPatientMessage, markDoctorChatAsRead, doctorProfiles, updateDoctorAvailability, chatAccess, upgradeUserSubscription, useConsultationCredit]);
 
   const renderScreen = () => {
     switch (screen) {

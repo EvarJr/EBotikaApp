@@ -31,18 +31,21 @@ export const CHAT_HISTORY_KEY = 'ebotikaChatHistory';
 export const SESSION_KEY = 'ebotikaSession';
 
 export const MOCK_USERS: User[] = [
-    { id: 'p1', name: 'Juan dela Cruz', email: 'patient@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09123456789', address: '123 Rizal Ave, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/237/200/200', status: 'active' },
+    { id: 'p1', name: 'Juan dela Cruz', email: 'patient@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09123456789', address: '123 Rizal Ave, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/237/200/200', status: 'active', validIdUrl: 'https://placehold.co/600x400.png?text=Valid+ID' },
     { 
         id: 'p2', name: 'Anna Reyes', email: 'anna@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09987654321', address: '456 Bonifacio St, Brgy. Mabini, Aklan', avatarUrl: 'https://picsum.photos/id/338/200/200', 
         status: 'banned',
+        validIdUrl: 'https://placehold.co/600x400.png?text=Valid+ID',
         reports: [
             { doctorId: 'd1', doctorName: 'Dr. Maria Dela Cruz', reason: 'Abusive language during chat consultation.', date: '2024-07-28' }
         ]
     },
-    { id: 'p3', name: 'Pedro Penduko', email: 'pedro@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09178765432', address: '789 Mabini Blvd, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/433/200/200', status: 'active', isPremium: true },
-    { id: 'p4', name: 'Carlos Santos', email: 'carlos@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09112223344', address: '111 National Road, Brgy. Aparicio, Aklan', avatarUrl: 'https://picsum.photos/id/111/200/200', status: 'active' },
-    { id: 'p5', name: 'Lina Gomez', email: 'lina@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09223334455', address: '222 Farm Trail, Brgy. Monlaque, Aklan', avatarUrl: 'https://picsum.photos/id/222/200/200', status: 'active' },
-    { id: 'p6', name: 'Ramon Garcia', email: 'ramon@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09334445566', address: '333 Seaside View, Brgy. Colongcolong, Aklan', avatarUrl: 'https://picsum.photos/id/333/200/200', status: 'active' },
+    { id: 'p3', name: 'Pedro Penduko', email: 'pedro@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09178765432', address: '789 Mabini Blvd, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/433/200/200', status: 'active', isPremium: true, subscriptionType: 'individual', monthlyConsultationCredits: 2, validIdUrl: 'https://placehold.co/600x400.png?text=Valid+ID' },
+    { id: 'p4', name: 'Carlos Santos', email: 'carlos@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09112223344', address: '111 National Road, Brgy. Aparicio, Aklan', avatarUrl: 'https://picsum.photos/id/111/200/200', status: 'active', validIdUrl: 'https://placehold.co/600x400.png?text=Valid+ID' },
+    { id: 'p5', name: 'Lina Gomez', email: 'lina@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09223334455', address: '222 Farm Trail, Brgy. Monlaque, Aklan', avatarUrl: 'https://picsum.photos/id/222/200/200', status: 'active', validIdUrl: 'https://placehold.co/600x400.png?text=Valid+ID' },
+    { id: 'p6', name: 'Ramon Garcia', email: 'ramon@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09334445566', address: '333 Seaside View, Brgy. Colongcolong, Aklan', avatarUrl: 'https://picsum.photos/id/333/200/200', status: 'active', validIdUrl: 'https://placehold.co/600x400.png?text=Valid+ID' },
+    { id: 'p7', name: 'Maria Santos', email: 'maria.santos@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09181112233', address: '101 Bayanihan St, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/651/200/200', status: 'active', isPremium: true, subscriptionType: 'family', familyId: 'fam1', monthlyConsultationCredits: 2, validIdUrl: 'https://placehold.co/600x400.png?text=Valid+ID' },
+    { id: 'p8', name: 'Junior Santos', email: 'junior.santos@ebotika.ph', password: 'password', role: 'patient', contactNumber: '09181112233', address: '101 Bayanihan St, Brgy. Poblacion, Aklan', avatarUrl: 'https://picsum.photos/id/577/200/200', status: 'active', isPremium: true, subscriptionType: 'family', familyId: 'fam1', monthlyConsultationCredits: 2, validIdUrl: 'https://placehold.co/600x400.png?text=Valid+ID' },
     { id: 'd1', name: 'Dr. Maria Dela Cruz', email: 'doctor@ebotika.ph', password: 'password', role: 'doctor', avatarUrl: 'https://picsum.photos/id/1027/200/200', isOnline: true, status: 'active' },
     { id: 'd2', name: 'Dr. Jose Rizal', email: 'doctor2@ebotika.ph', password: 'password', role: 'doctor', avatarUrl: 'https://picsum.photos/id/1005/200/200', isOnline: false, status: 'active' },
     { id: 'd3', name: 'Dr. Gabriela Silang', email: 'doctor3@ebotika.ph', password: 'password', role: 'doctor', avatarUrl: 'https://picsum.photos/id/1011/200/200', isOnline: true, status: 'active' },

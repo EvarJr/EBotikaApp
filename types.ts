@@ -18,6 +18,9 @@ export interface User {
   status: 'active' | 'banned';
   reports?: { doctorId: string; doctorName: string; reason: string; date: string }[];
   isPremium?: boolean;
+  subscriptionType?: 'individual' | 'family';
+  familyId?: string | null;
+  monthlyConsultationCredits?: number;
 }
 
 export interface ResidentRecord {
@@ -101,7 +104,8 @@ export interface IAppContext {
   doctorProfiles: DoctorProfile[];
   updateDoctorAvailability: (doctorId: string, availability: 'Available' | 'On Leave') => void;
   chatAccess: { [conversationId: string]: number };
-  upgradeUserToPremium: (userId: string) => void;
+  upgradeUserSubscription: (userId: string, plan: 'individual' | 'family') => void;
+  useConsultationCredit: (userId: string) => void;
 }
 
 export interface ChatMessage {

@@ -80,6 +80,9 @@ export const translations: Translations = {
     consultation_sent_alert: 'Your AI summary has been sent to a doctor for review. You can track the status in your Consultations and Prescriptions lists.',
     guest_modal_id_required_alert: "Please upload a valid ID to proceed.",
     guest_not_verified_error: "Verification failed. Your name is not on the list of verified residents. Only verified residents can send consultations to a doctor.",
+    upgrade_for_consultation_alert_non_premium: "You must be a premium member to consult with a doctor. Please upgrade your account on the Profile screen.",
+    upgrade_for_consultation_alert_no_credits: "You have used all your free doctor consultations for the month. Your credits will reset on your next subscription renewal.",
+
 
     // Consultations Screen
     consultations_title: 'My Consultations',
@@ -119,22 +122,30 @@ export const translations: Translations = {
     profile_cancel_button: 'Cancel',
     profile_change_avatar_button: 'Change',
     profile_updated_alert: 'Your profile has been updated successfully.',
-    profile_premium_badge: 'Premium Member',
-    profile_upgrade_prompt_title: 'Upgrade to Premium',
-    profile_upgrade_prompt_text: 'Get unlimited, anytime chat access with all doctors.',
-    profile_upgrade_button: 'Upgrade Now',
+    profile_upgrade_prompt_title: 'Choose a Subscription Plan',
+    profile_upgrade_button: 'Choose Plan',
+    profile_consultation_credits: 'Monthly Doctor Consultations: {count}/2',
+    best_value_banner: 'Best Value',
+    
+    // Subscription Plans
+    subscription_price_format: "₱{price}/month",
+    individual_plan_title: "Individual Plan",
+    individual_plan_feature_1: "Unlimited AI Consultations",
+    individual_plan_feature_2: "2 Free Doctor Consultations",
+    family_plan_title: "Family Plan",
+    family_plan_feature_1: "Covers up to 4 members",
+    family_plan_feature_2: "Shared benefits & records",
+    family_plan_feature_3: "Priority Support",
+    family_management_title: "Family Management",
+    family_members_list: "Family Members",
     
     // Payment Modal
-    payment_modal_title: 'Upgrade to Premium',
-    payment_modal_description: 'Unlock unlimited chat access with all doctors.',
-    payment_modal_price: 'One-time payment of ₱299.00',
-    payment_modal_cardholder_label: 'Cardholder Name',
-    payment_modal_card_number_label: 'Card Number',
-    payment_modal_expiry_label: 'Expiry Date (MM/YY)',
-    payment_modal_cvc_label: 'CVC',
-    payment_modal_pay_button: 'Pay Now',
+    payment_modal_title: 'Complete Your Subscription',
+    payment_modal_price: '₱{price}.00 / Month',
+    payment_modal_gcash_number_label: 'GCash Mobile Number',
+    payment_modal_pay_button_gcash: 'Pay ₱{price}.00 with GCash',
     payment_modal_processing_button: 'Processing...',
-    payment_success_alert: 'Payment successful! You are now a Premium Member.',
+    payment_success_alert: 'Payment successful! Your subscription is now active.',
     
     // AI Summary Card
     ai_summary_title: 'AI Triage Summary',
@@ -376,7 +387,9 @@ export const translations: Translations = {
     consultation_sent_alert: 'Ro imong AI summary hay naipadara eon sa doktor para sa review. Pwede mong masubaybayan ro status sa imong listahan it Konsultasyon ag Reseta.',
     guest_modal_id_required_alert: "Palihog, mag-upload it balido nga ID para makapadayon.",
     guest_not_verified_error: "Nagpalya ro beripikasyon. Ro imong pangaean hay owa sa listahan it mga beripikadong residente. Ro mga beripikadong residente eamang ro pwedeng magpadara it konsultasyon sa doktor.",
-    
+    upgrade_for_consultation_alert_non_premium: "Kinahanglan nga premium member ka para makakonsulta sa doktor. Palihog, i-upgrade ro imong account sa Propayl nga screen.",
+    upgrade_for_consultation_alert_no_credits: "Naubos mo eon ro imong libreng konsultasyon sa doktor para sa rayang buean. Magabalik ro imong credits sa masunod nga pag-renew it subscription.",
+
     // Consultations Screen
     consultations_title: 'Akong mga Konsulta',
     consultations_empty: 'Owa ka pa it mga konsultasyon.',
@@ -415,22 +428,30 @@ export const translations: Translations = {
     profile_cancel_button: 'Kanselahon',
     profile_change_avatar_button: 'Bag-uhon',
     profile_updated_alert: 'Ro imong propayl hay madinaeag-on nga na-update.',
-    profile_premium_badge: 'Miyembro nga Premium',
-    profile_upgrade_prompt_title: 'Mag-upgrade sa Premium',
-    profile_upgrade_prompt_text: 'Maka-access sa owa’t-limite nga chat sa tanan nga mga doktor.',
-    profile_upgrade_button: 'Mag-upgrade',
+    profile_upgrade_prompt_title: 'Magpili it Plano it Subscription',
+    profile_upgrade_button: 'Pili-on ro Plano',
+    profile_consultation_credits: 'Konsultasyon sa Doktor Kada Buean: {count}/2',
+    best_value_banner: 'Pinakamaayo nga Bili',
+
+    // Subscription Plans
+    subscription_price_format: "₱{price}/kada buean",
+    individual_plan_title: "Plano nga Pang-isaeang Tawo",
+    individual_plan_feature_1: "Owa't-limite nga AI Consultation",
+    individual_plan_feature_2: "2 Libre nga Konsultasyon sa Doktor",
+    family_plan_title: "Plano nga Pang-pamilya",
+    family_plan_feature_1: "Para sa hasta 4 ka miyembro",
+    family_plan_feature_2: "Ginabahin nga benepisyo ag rekord",
+    family_plan_feature_3: "Prayoridad nga Suporta",
+    family_management_title: "Pagdumaea it Pamilya",
+    family_members_list: "Mga Miyembro it Pamilya",
     
     // Payment Modal
-    payment_modal_title: 'Mag-upgrade sa Premium',
-    payment_modal_description: 'Maka-access sa owa’t-limite nga chat sa tanan nga mga doktor.',
-    payment_modal_price: 'Isaeang beses nga pagbayad it ₱299.00',
-    payment_modal_cardholder_label: 'Pangaean sa Kard',
-    payment_modal_card_number_label: 'Numero it Kard',
-    payment_modal_expiry_label: 'Petsa it Pag-expire (MM/YY)',
-    payment_modal_cvc_label: 'CVC',
-    payment_modal_pay_button: 'Magbayad',
+    payment_modal_title: 'Kumpletuhon ro Imong Subscription',
+    payment_modal_price: '₱{price}.00 / Kada Buean',
+    payment_modal_gcash_number_label: 'GCash Mobile Number',
+    payment_modal_pay_button_gcash: 'Magbayad it ₱{price}.00 gamit ro GCash',
     payment_modal_processing_button: 'Ginaproseso...',
-    payment_success_alert: 'Madinaeag-on ro pagbayad! Ikaw hay sangka Premium Member eon.',
+    payment_success_alert: 'Madinaeag-on ro pagbayad! Aktibo eon ro imong subscription.',
     
     // AI Summary Card
     ai_summary_title: 'AI Triage Summary',

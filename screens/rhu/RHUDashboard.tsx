@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useAppContext } from '../../hooks/useAppContext';
 import { MockChart, StatCard } from '../../components/Dashboard';
 import { Screens } from '../../constants';
@@ -75,7 +75,6 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose, titleKey, allowedR
     );
 };
 
-
 const PatientCard: React.FC<{ patient: User }> = ({ patient }) => {
     const { navigateTo, setActivePatientForManagement, t } = useAppContext();
 
@@ -89,7 +88,7 @@ const PatientCard: React.FC<{ patient: User }> = ({ patient }) => {
     return (
         <button 
             onClick={handleReview}
-            className={`w-full text-left bg-gray-50 p-2 rounded-md flex justify-between items-center text-sm hover:bg-gray-100 transition ${isBanned ? 'opacity-60' : ''}`}
+            className={`w-full text-left bg-white p-2 rounded-md flex justify-between items-center text-sm hover:bg-gray-200 transition ${isBanned ? 'opacity-60' : ''}`}
         >
             <div className="flex items-center space-x-2">
                 <img src={patient.avatarUrl || `https://ui-avatars.com/api/?name=${patient.name.replace(' ', '+')}&background=random`} alt={patient.name} className="w-8 h-8 rounded-full object-cover" />
@@ -104,6 +103,31 @@ const PatientCard: React.FC<{ patient: User }> = ({ patient }) => {
         </button>
     );
 };
+
+const BarangayAccordion: React.FC<{ barangay: string; patients: User[]; }> = ({ barangay, patients }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const { t } = useTranslation();
+
+    return (
+        <div className="border-t border-gray-200 last:border-b">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100 transition"
+            >
+                <span className="font-semibold text-gray-700">{barangay} ({patients.length})</span>
+                <ChevronDownIcon className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {isOpen && (
+                <div className="p-2 space-y-2 bg-gray-50/50">
+                    {patients.map(patient => (
+                        <PatientCard key={patient.id} patient={patient} />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
 
 const ProfessionalUserCard: React.FC<{ user: User; onDelete?: () => void }> = ({ user, onDelete }) => (
     <div className="bg-gray-50 p-2 rounded-md flex justify-between items-center text-sm">
@@ -148,6 +172,12 @@ const ConfirmationModal: React.FC<{
     );
 };
 
+const parseBarangayFromAddress = (address: string | undefined, t: (key: string) => string): string => {
+    if (!address) return t('doctor_inbox_unknown_barangay');
+    const match = address.match(/Brgy\.\s*([^,]+)/i);
+    return match ? match[1].trim() : t('doctor_inbox_unknown_barangay');
+};
+
 
 const RHUDashboard: React.FC = () => {
     const { user, logout, navigateTo, t, users, consultations, prescriptions, deleteUser } = useAppContext();
@@ -175,6 +205,17 @@ const RHUDashboard: React.FC = () => {
     const bhws = users.filter(u => u.role === 'bhw');
     const pharmacists = users.filter(u => u.role === 'pharmacy');
     const patientUsers = users.filter(u => u.role === 'patient');
+
+    const groupedPatients = useMemo(() => {
+        return patientUsers.reduce<Record<string, User[]>>((acc, patient) => {
+            const barangay = parseBarangayFromAddress(patient.address, t);
+            if (!acc[barangay]) {
+                acc[barangay] = [];
+            }
+            acc[barangay].push(patient);
+            return acc;
+        }, {});
+    }, [patientUsers, t]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -396,9 +437,9 @@ const RHUDashboard: React.FC = () => {
                         <div className="bg-white p-4 rounded-lg shadow">
                             <h2 className="font-bold text-lg text-gray-800 mb-2">{t('rhu_patient_management_title')}</h2>
                             <h3 className="font-semibold text-gray-700 text-sm mb-2">{t('rhu_patient_list_title')} ({patientUsers.length})</h3>
-                            <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                                {patientUsers.map(patient => (
-                                    <PatientCard key={patient.id} patient={patient} />
+                            <div className="max-h-60 overflow-y-auto custom-scrollbar border rounded-md">
+                                {Object.entries(groupedPatients).map(([barangay, patients]) => (
+                                    <BarangayAccordion key={barangay} barangay={barangay} patients={patients} />
                                 ))}
                             </div>
                         </div>
