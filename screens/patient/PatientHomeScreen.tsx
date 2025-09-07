@@ -27,9 +27,10 @@ const SymptomCard: React.FC<{ symptom: Symptom }> = ({ symptom }) => {
 };
 
 const DoctorCard: React.FC<{ doctor: DoctorProfile }> = ({ doctor }) => {
-  const { navigateTo, setActiveDoctorChatRecipient } = useAppContext();
+  const { role, navigateTo, setActiveDoctorChatRecipient } = useAppContext();
   const { t } = useTranslation();
   const isAvailable = doctor.availability === 'Available';
+  const isGuest = role === 'guest';
 
   const handleChat = () => {
     setActiveDoctorChatRecipient(doctor);
@@ -37,25 +38,34 @@ const DoctorCard: React.FC<{ doctor: DoctorProfile }> = ({ doctor }) => {
   };
 
   return (
-    <div className="flex-shrink-0 w-48 bg-white rounded-xl shadow-lg p-4 text-center mr-4">
-      <img src={doctor.avatarUrl} alt={doctor.name} className="w-20 h-20 rounded-full mx-auto border-4 border-teal-100" />
-      <h3 className="font-bold text-gray-800 mt-2 truncate">{doctor.name}</h3>
-      <p className="text-xs text-gray-500">{t(doctor.specialty)}</p>
-      
-      <div className="flex items-center justify-center mt-2">
-          <span className={`w-2.5 h-2.5 rounded-full mr-1.5 ${isAvailable ? 'bg-green-500' : 'bg-red-500'}`}></span>
-          <p className={`text-xs font-semibold ${isAvailable ? 'text-green-600' : 'text-red-600'}`}>
-              {isAvailable ? t('doctor_status_available') : t('doctor_status_on_leave')}
-          </p>
+    <div className="flex-shrink-0 w-48 bg-white rounded-xl shadow-lg p-4 text-center mr-4 flex flex-col">
+      <div className="flex-grow">
+        <img src={doctor.avatarUrl} alt={doctor.name} className="w-20 h-20 rounded-full mx-auto border-4 border-teal-100" />
+        <h3 className="font-bold text-gray-800 mt-2 truncate">{doctor.name}</h3>
+        <p className="text-xs text-gray-500">{t(doctor.specialty)}</p>
+        
+        <div className="flex items-center justify-center mt-2">
+            <span className={`w-2.5 h-2.5 rounded-full mr-1.5 ${isAvailable ? 'bg-green-500' : 'bg-red-500'}`}></span>
+            <p className={`text-xs font-semibold ${isAvailable ? 'text-green-600' : 'text-red-600'}`}>
+                {isAvailable ? t('doctor_status_available') : t('doctor_status_on_leave')}
+            </p>
+        </div>
       </div>
       
-      <button 
-        onClick={handleChat} 
-        disabled={!isAvailable}
-        className="mt-3 bg-blue-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-blue-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
-      >
-          {t('doctor_chat_button')}
-      </button>
+      <div className="mt-3">
+        <button 
+          onClick={handleChat} 
+          disabled={!isAvailable || isGuest}
+          className="bg-blue-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-blue-600 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+            {t('doctor_chat_button')}
+        </button>
+        {isGuest && (
+          <p className="text-xs text-gray-500 mt-2">
+              {t('guest_chat_disabled_prompt')}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

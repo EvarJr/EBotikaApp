@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useAppContext } from '../../hooks/useAppContext';
 import { Screens } from '../../constants';
 import type { PatientDoctorChatMessage } from '../../types';
@@ -47,7 +47,9 @@ const DoctorChatScreen: React.FC = () => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
     
-    const messages = conversationId ? patientDoctorChats[conversationId] || [] : [];
+    const messages = useMemo(() => {
+        return conversationId ? patientDoctorChats[conversationId] || [] : [];
+    }, [conversationId, patientDoctorChats]);
     
     useEffect(scrollToBottom, [messages]);
     
