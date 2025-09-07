@@ -123,7 +123,21 @@ const PatientDetailScreen: React.FC = () => {
                             <p className="text-sm text-gray-600">{patient.contactNumber}</p>
                         </div>
                     </div>
-                    <div className="mt-4 border-t pt-4">
+                    <div className="mt-4 border-t pt-4 space-y-3">
+                         {patient.validIdUrl ? (
+                            <a 
+                                href={patient.validIdUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block w-full text-center bg-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-blue-600 transition"
+                            >
+                                {t('rhu_view_id_button')}
+                            </a>
+                        ) : (
+                            <div className="text-center text-sm text-gray-500 bg-gray-100 p-2 rounded-md">
+                                {t('rhu_no_id_submitted')}
+                            </div>
+                        )}
                         <div className="bg-gray-50 p-3 rounded-md text-center">
                             <p className="text-sm font-medium text-gray-500">{t('patient_detail_prescriptions_received')}</p>
                             <p className="text-2xl font-bold text-teal-600">{patientPrescriptionCount}</p>

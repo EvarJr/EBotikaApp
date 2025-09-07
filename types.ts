@@ -13,6 +13,7 @@ export interface User {
   avatarUrl?: string;
   contactNumber?: string;
   address?: string;
+  validIdUrl?: string;
   isOnline?: boolean;
   status: 'active' | 'banned';
   reports?: { doctorId: string; doctorName: string; reason: string; date: string }[];
@@ -53,7 +54,7 @@ export interface IAppContext {
   setLanguage: (language: Language) => void;
   startSymptomCheck: (initialSymptom: string) => void;
   symptom: string | null;
-  updateGuestDetails: (details: { name: string, contactNumber: string, address: string }) => User;
+  updateGuestDetails: (details: { name: string, contactNumber: string, address: string, validIdFile: File }) => User;
   updateUserProfile: (updatedUser: Partial<User>) => void;
   addProfessionalUser: (user: Omit<User, 'id' | 'status'>) => void;
   updateUserStatus: (userId: string, status: 'active' | 'banned') => void;
@@ -125,6 +126,7 @@ export type PrescriptionStatus = 'Pending' | 'Approved' | 'Remitted' | 'Denied';
 export interface Prescription {
     id: string;
     consultationId: string;
+
     patient: User;
     medicine?: string;
     dosage?: string;

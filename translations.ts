@@ -30,7 +30,13 @@ export const translations: Translations = {
     register_phone_label: 'Phone Number',
     register_address_label: 'Address',
     register_guest_upgrade_message: 'Create your account to save your current guest session.',
-    
+    register_valid_id_label: "Valid ID (Municipal/Gov't Issued)",
+    register_valid_id_prompt: "To verify residency, please upload a clear photo of your valid ID.",
+    register_upload_button: "Upload ID Photo",
+    register_file_chosen: "File: {fileName}",
+    register_no_file_chosen: "No file chosen",
+    register_id_required_alert: "Please upload a valid ID to complete registration.",
+
     // Layout & Navigation
     nav_home: 'Home',
     nav_consults: 'Consults',
@@ -70,6 +76,7 @@ export const translations: Translations = {
     guest_modal_cancel: 'Cancel',
     guest_modal_save: 'Save & Continue',
     consultation_sent_alert: 'Your AI summary has been sent to a doctor for review. You can track the status in your Consultations and Prescriptions lists.',
+    guest_modal_id_required_alert: "Please upload a valid ID to proceed.",
 
     // Consultations Screen
     consultations_title: 'My Consultations',
@@ -212,6 +219,8 @@ export const translations: Translations = {
     patient_status_banned: 'Banned',
     confirm: "Confirm",
     cancel: "Cancel",
+    rhu_view_id_button: "View Submitted ID",
+    rhu_no_id_submitted: "No ID submitted.",
 
     // Professional Profile Edit
     professional_edit_profile_title: 'Edit Profile',
@@ -253,6 +262,12 @@ export const translations: Translations = {
     register_phone_label: 'Numero it Telepono',
     register_address_label: 'Adres',
     register_guest_upgrade_message: 'Himuon ro imong account para ma-save ro imong kasamtangan nga sesyon bilang bisita.',
+    register_valid_id_label: "Balido nga ID (Munisipyo/Gobyerno)",
+    register_valid_id_prompt: "Para mapamatud-an ro pagka-residente, palihog mag-upload it maathag nga litrato it imong balido nga ID.",
+    register_upload_button: "Mag-upload it Litrato it ID",
+    register_file_chosen: "File: {fileName}",
+    register_no_file_chosen: "Owa't napili nga file",
+    register_id_required_alert: "Palihog, mag-upload it balido nga ID para makumpleto ro pagrehistro.",
 
     // Layout & Navigation
     nav_home: 'Balay',
@@ -293,7 +308,8 @@ export const translations: Translations = {
     guest_modal_cancel: 'Kanselahon',
     guest_modal_save: 'I-save ag Magpadayon',
     consultation_sent_alert: 'Ro imong AI summary hay naipadara eon sa doktor para sa review. Pwede mong masubaybayan ro status sa imong listahan it Konsultasyon ag Reseta.',
-
+    guest_modal_id_required_alert: "Palihog, mag-upload it balido nga ID para makapadayon.",
+    
     // Consultations Screen
     consultations_title: 'Akong mga Konsulta',
     consultations_empty: 'Owa ka pa it mga konsultasyon.',
@@ -435,6 +451,8 @@ export const translations: Translations = {
     patient_status_banned: 'Na-ban',
     confirm: "Kumpirmahon",
     cancel: "Kanselahon",
+    rhu_view_id_button: "Tan-awon ro ID",
+    rhu_no_id_submitted: "Owa't ID nga gin-submit.",
 
     // Professional Profile Edit
     professional_edit_profile_title: 'I-edit ro Propayl',

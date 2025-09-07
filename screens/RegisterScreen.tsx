@@ -12,11 +12,17 @@ const RegisterScreen: React.FC = () => {
     const [password, setPassword] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [address, setAddress] = useState('');
+    const [validIdFile, setValidIdFile] = useState<File | null>(null);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!name.trim() || !email.trim() || !password.trim() || !phoneNumber.trim() || !address.trim()) {
             alert("Please fill in all fields.");
+            return;
+        }
+
+        if (!validIdFile) {
+            alert(t('register_id_required_alert'));
             return;
         }
 
@@ -28,12 +34,19 @@ const RegisterScreen: React.FC = () => {
             address,
             role: 'patient',
             status: 'active',
+            validIdUrl: URL.createObjectURL(validIdFile),
         };
 
         // In a real app, you would have a registration API call here.
         // After successful registration, you'd log the user in.
         alert(`Registration successful for ${name}! Welcome.`);
         login('patient', newUser);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setValidIdFile(e.target.files[0]);
+        }
     };
 
     return (
@@ -107,6 +120,17 @@ const RegisterScreen: React.FC = () => {
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
                             required
                         />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">{t('register_valid_id_label')}</label>
+                        <p className="text-xs text-gray-500 mb-2">{t('register_valid_id_prompt')}</p>
+                        <label htmlFor="id-upload" className="w-full text-center cursor-pointer bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 inline-flex justify-center text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                            {t('register_upload_button')}
+                            <input id="id-upload" name="id-upload" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" />
+                        </label>
+                        <p className="text-xs text-center text-gray-500 mt-1">
+                            {validIdFile ? t('register_file_chosen', { fileName: validIdFile.name }) : t('register_no_file_chosen')}
+                        </p>
                     </div>
                     <div className="pt-4">
                         <button

@@ -24,10 +24,11 @@ const ChatBubble: React.FC<{ message: ChatMessage }> = ({ message }) => {
   );
 };
 
-const GuestDetailsModal: React.FC<{ onClose: () => void; onSubmit: (details: { name: string, contactNumber: string, address: string }) => void; }> = ({ onClose, onSubmit }) => {
+const GuestDetailsModal: React.FC<{ onClose: () => void; onSubmit: (details: { name: string, contactNumber: string, address: string, validIdFile: File }) => void; }> = ({ onClose, onSubmit }) => {
     const [name, setName] = useState('');
     const [contactNumber, setContactNumber] = useState('');
     const [address, setAddress] = useState('');
+    const [validIdFile, setValidIdFile] = useState<File | null>(null);
     const { t } = useTranslation();
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -36,7 +37,17 @@ const GuestDetailsModal: React.FC<{ onClose: () => void; onSubmit: (details: { n
             alert("Please fill in all details.");
             return;
         }
-        onSubmit({ name, contactNumber, address });
+        if (!validIdFile) {
+            alert(t('guest_modal_id_required_alert'));
+            return;
+        }
+        onSubmit({ name, contactNumber, address, validIdFile });
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setValidIdFile(e.target.files[0]);
+        }
     };
 
     return (
@@ -56,6 +67,17 @@ const GuestDetailsModal: React.FC<{ onClose: () => void; onSubmit: (details: { n
                     <div>
                         <label htmlFor="address" className="block text-xs font-medium text-gray-700">{t('guest_modal_address_label')}</label>
                         <input id="address" value={address} onChange={e => setAddress(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 text-sm" required />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-medium text-gray-700">{t('register_valid_id_label')}</label>
+                         <p className="text-xs text-gray-500 mb-1">{t('register_valid_id_prompt')}</p>
+                        <label htmlFor="id-upload-modal" className="w-full text-center cursor-pointer bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 inline-flex justify-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            {t('register_upload_button')}
+                            <input id="id-upload-modal" name="id-upload-modal" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" />
+                        </label>
+                        <p className="text-xs text-center text-gray-500 mt-1 truncate">
+                            {validIdFile ? t('register_file_chosen', { fileName: validIdFile.name }) : t('register_no_file_chosen')}
+                        </p>
                     </div>
                     <div className="flex justify-end space-x-2 pt-2">
                         <button type="button" onClick={onClose} className="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300">{t('guest_modal_cancel')}</button>
@@ -141,7 +163,7 @@ const SymptomCheckScreen: React.FC = () => {
         }
     };
 
-    const handleGuestSubmit = (details: { name: string; contactNumber: string; address: string; }) => {
+    const handleGuestSubmit = (details: { name: string; contactNumber: string; address: string; validIdFile: File }) => {
         const newPatientUser = updateGuestDetails(details);
         setIsGuestModalOpen(false);
         createAndSubmitConsultation(newPatientUser);

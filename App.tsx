@@ -227,7 +227,7 @@ export default function App() {
       navigateTo(Screens.SYMPTOM_CHECK);
   }, [navigateTo]);
   
-  const updateGuestDetails = useCallback((details: { name: string; contactNumber: string; address: string; }): User => {
+  const updateGuestDetails = useCallback((details: { name: string; contactNumber: string; address: string; validIdFile: File }): User => {
     const guestUser: User = {
       id: user?.id || `guest-${Date.now()}`, // Preserve guest ID
       name: details.name,
@@ -235,6 +235,7 @@ export default function App() {
       role: 'patient',
       contactNumber: details.contactNumber,
       address: details.address,
+      validIdUrl: URL.createObjectURL(details.validIdFile),
       status: 'active',
     };
     setUser(guestUser);

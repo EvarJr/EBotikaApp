@@ -11,6 +11,13 @@ const GuestProfileForm: React.FC = () => {
     const [name, setName] = useState('');
     const [contactNumber, setContactNumber] = useState('');
     const [address, setAddress] = useState('');
+    const [validIdFile, setValidIdFile] = useState<File | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setValidIdFile(e.target.files[0]);
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,7 +25,12 @@ const GuestProfileForm: React.FC = () => {
             alert("Please fill in all details.");
             return;
         }
-        updateGuestDetails({ name, contactNumber, address });
+        // FIX: Check for validIdFile and include it in the updateGuestDetails call.
+        if (!validIdFile) {
+            alert(t('register_id_required_alert'));
+            return;
+        }
+        updateGuestDetails({ name, contactNumber, address, validIdFile });
         alert(t('profile_details_saved_alert'));
         navigateTo(Screens.PATIENT_HOME);
     };
@@ -39,6 +51,18 @@ const GuestProfileForm: React.FC = () => {
                 <div>
                     <label htmlFor="address" className="block text-sm font-medium text-gray-700">{t('guest_modal_address_label')}</label>
                     <textarea id="address" rows={3} value={address} onChange={e => setAddress(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" required />
+                </div>
+                {/* FIX: Add file input for the valid ID. */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">{t('register_valid_id_label')}</label>
+                    <p className="text-xs text-gray-500 mb-2">{t('register_valid_id_prompt')}</p>
+                    <label htmlFor="id-upload-profile" className="w-full text-center cursor-pointer bg-white border border-gray-300 rounded-md shadow-sm px-4 py-2 inline-flex justify-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        {t('register_upload_button')}
+                        <input id="id-upload-profile" name="id-upload-profile" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" />
+                    </label>
+                    <p className="text-xs text-center text-gray-500 mt-1">
+                        {validIdFile ? t('register_file_chosen', { fileName: validIdFile.name }) : t('register_no_file_chosen')}
+                    </p>
                 </div>
                 <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:bg-teal-600 transition duration-300">
                     {t('profile_guest_form_save_button')}
